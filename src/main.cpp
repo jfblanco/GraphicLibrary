@@ -1,6 +1,11 @@
-#include "SDL.h"
-#include "SDL3_image/SDL_image.h"
-#include "SDL3_mixer/SDL_mixer.h"
+#include <SDL3/SDL.h>
+#include <SDL3_image/SDL_image.h>
+#include <SDL3_mixer/SDL_mixer.h>
+
+#include "../modules/Core/include/GameBaseEntity.h"
+#include "events/CloseEvent.h"
+#include <EventManager.h>
+#include <ResourcesManager.h>
 
 int main() {
 
@@ -9,6 +14,10 @@ int main() {
     SDL_Renderer *renderer;
     SDL_Texture *texture1 = NULL;
     SDL_Texture *texture2 = NULL;
+    auto* entity1 = new GameBaseEntity();
+    auto* closeEvent = new CloseEvent();
+    auto* eventManager = new EventManager();
+    auto* diskManager = new ResourcesManager();
 
     SDL_AudioSpec spec;
     spec.freq = MIX_DEFAULT_FREQUENCY;
@@ -19,6 +28,13 @@ int main() {
         SDL_Log("Couldn't initialize SDL: %s\n",SDL_GetError());
         return(255);
     }
+
+    diskManager->load3DModels();
+
+    eventManager->init();
+
+    eventManager->addQuitEventListener(closeEvent);
+    //eventManager->addMouseEventListener(closeEvent);
 
     if(!IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG)) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "SDL Image could not be initialized! Error: %s", SDL_GetError());
@@ -67,16 +83,9 @@ int main() {
     rect2->x = 500;
     rect2->y = 100;
 
-    SDL_bool quit = SDL_FALSE;
-    while (!quit) {
-        SDL_Event ev;
-        while (SDL_PollEvent(&ev) != 0) {
-            switch(ev.type) {
-                case SDL_EVENT_QUIT:
-                    quit = SDL_TRUE;
-                    break;
-            }
-        }
+    while (!closeEvent->getExitLoop()) {
+        eventManager->checkEventQueue();
+
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
