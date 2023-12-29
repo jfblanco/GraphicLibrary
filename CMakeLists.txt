@@ -19,6 +19,7 @@ link_directories(external/jsoncpp/lib)
 
 include_directories(modules/Input/include)
 include_directories(modules/Disk/include)
+include_directories(modules/Render/include)
 
 add_subdirectory(src)
 add_subdirectory(modules)

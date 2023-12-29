@@ -6,18 +6,18 @@
 #include "events/CloseEvent.h"
 #include <EventManager.h>
 #include <ResourcesManager.h>
+#include <Renderer.h>
 
 int main() {
 
     Mix_Music* music = NULL;
-    SDL_Window *window;
-    SDL_Renderer *renderer;
     SDL_Texture *texture1 = NULL;
     SDL_Texture *texture2 = NULL;
     auto* entity1 = new GameBaseEntity();
     auto* closeEvent = new CloseEvent();
     auto* eventManager = new EventManager();
     auto* diskManager = new ResourcesManager();
+    auto* renderManager = new Renderer();
 
     SDL_AudioSpec spec;
     spec.freq = MIX_DEFAULT_FREQUENCY;
@@ -32,9 +32,10 @@ int main() {
     diskManager->load3DModels();
 
     eventManager->init();
+    renderManager->init();
 
     eventManager->addQuitEventListener(closeEvent);
-    //eventManager->addMouseEventListener(closeEvent);
+//    eventManager->addMouseEventListener(closeEvent);
 
     if(!IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG)) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "SDL Image could not be initialized! Error: %s", SDL_GetError());
@@ -57,18 +58,15 @@ int main() {
                 (spec.channels > 2) ? "surround" : (spec.channels > 1) ? "stereo" : "mono");
     }
 
-    window = SDL_CreateWindow("Otro titulo", 1024, 720, 0);
-    renderer = SDL_CreateRenderer(window, NULL, SDL_RENDERER_ACCELERATED);
-
     music = Mix_LoadMUS("assets/bata.ogg");
-    if(music != NULL) {
-        Mix_FadeInMusic(music, 5, 2000);
-    } else {
-        SDL_Log("Couldn't open audio: %s\n", SDL_GetError());
-    }
+//    if(music != NULL) {
+//        Mix_FadeInMusic(music, 5, 2000);
+//    } else {
+//        SDL_Log("Couldn't open audio: %s\n", SDL_GetError());
+//    }
 
-    texture1 = SDL_CreateTextureFromSurface(renderer, surface1);
-    texture2 = SDL_CreateTextureFromSurface(renderer, surface2);
+    texture1 = SDL_CreateTextureFromSurface(renderManager->renderer, surface1);
+    texture2 = SDL_CreateTextureFromSurface(renderManager->renderer, surface2);
 
     SDL_DestroySurface(surface1);
     SDL_DestroySurface(surface2);
@@ -86,17 +84,16 @@ int main() {
     while (!closeEvent->getExitLoop()) {
         eventManager->checkEventQueue();
 
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
+        renderManager->cleanScreen();
 
-        SDL_RenderTexture(renderer, texture1, NULL, rect1);
-        SDL_RenderTexture(renderer, texture2, NULL, rect2);
+        SDL_RenderTexture(renderManager->renderer, texture1, NULL, rect1);
+        SDL_RenderTexture(renderManager->renderer, texture2, NULL, rect2);
 
-        SDL_RenderPresent(renderer);
+        renderManager->render();
     }
 
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
+    SDL_DestroyRenderer(renderManager->renderer);
+    SDL_DestroyWindow(renderManager->window);
     SDL_Quit();
     return 0;
 }
