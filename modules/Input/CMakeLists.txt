@@ -6,6 +6,12 @@ include(CMakeDependentOption)
 
 include_directories(include)
 
+link_directories(../../external/SDL3/lib)
+link_directories(../../external/SDL3_image/lib)
+link_directories(../../external/SDL3_mixer/lib)
+link_directories(../../external/SDL3_ttf/lib)
+link_directories(../../external/SDL3_net/lib)
+
 option(ENGINE_INPUT_SHARED "Build a shared version of the Input Manager library" ON)
 
 if(ENGINE_INPUT_SHARED)

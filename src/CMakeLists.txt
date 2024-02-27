@@ -9,8 +9,7 @@ target_link_libraries(EngineTest
         PRIVATE SDL3_mixer
         PRIVATE Core
         PRIVATE EventLibrary
-        PRIVATE RenderLibrary
-        PRIVATE Disk)
+        PRIVATE RenderLibrary)
 
 file(COPY assets DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 
@@ -27,13 +26,6 @@ if(ENGINE_INPUT_SHARED)
             COMMENT "Created ${CMAKE_CURRENT_BINARY_DIR}/src/EventLibrary.dll"
     )
 endif(ENGINE_INPUT_SHARED)
-
-if(ENGINE_DISK_SHARED)
-    add_custom_command(TARGET EngineTest POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/../modules/Disk/Disk.dll "${CMAKE_CURRENT_BINARY_DIR}"
-            COMMENT "Created ${CMAKE_CURRENT_BINARY_DIR}/src/Disk.dll"
-    )
-endif(ENGINE_DISK_SHARED)
 
 if(ENGINE_RENDERER_SHARED)
     add_custom_command(TARGET EngineTest POST_BUILD

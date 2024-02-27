@@ -6,8 +6,9 @@
 #define ENGINETEST_RENDERER_H
 
 #include <SDL3/SDL.h>
+#include <RenderingSystem.h>
 
-class Renderer {
+class Renderer : public RenderingSystem {
 private:
     void logSystemInformation();
 public:
@@ -18,9 +19,10 @@ public:
     Renderer()=default;
     ~Renderer()=default;
 
-    void init();
-    void render();
-    void cleanScreen();
+    void init() override;
+    void destroy() override;
+    void render() override;
+    void cleanScreen() override;
 };
 
 

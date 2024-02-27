@@ -1,0 +1,28 @@
+{
+  "name": "gameEngineTest",
+  "renderManager": {
+    "windowHeight": 1366,
+    "windowWidth": 768,
+    "selectedDisplay": 1,
+    "fullScreen": false,
+    "defaultShader": "brickShader"
+  },
+  "eventManager": {
+    "quitListenersBufferSize": 5,
+    "keyBoardListenersBufferSize": 1
+  },
+  "resourceManager": {
+    "modelPathFolder": "res/models/",
+    "shaderPathFolder": "res/shaders/"
+  },
+  "logManagger": {
+    "enableConfigManagerLogger": true,
+    "enableRenderManagerLogger": true,
+    "enableResourcesManagerLogger": false,
+    "enableEventManagerLogger": true
+  },
+  "shaderManager": {
+    "shaderConfigurationFile": "res/shadersConfig.json"
+  },
+  "algo": 65527
+}

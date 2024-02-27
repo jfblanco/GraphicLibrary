@@ -23,6 +23,11 @@ void Renderer::init() {
     SDL_Log("Renderer initialization complete!!!");
 }
 
+void Renderer::destroy() {
+    SDL_DestroyWindow(this->window);
+    SDL_DestroyRenderer(this->renderer);
+}
+
 void Renderer::render() {
     SDL_GL_SwapWindow(this->window);
 }

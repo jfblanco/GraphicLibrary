@@ -35,10 +35,19 @@ void EventManager::init() {
     SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "[EventManager] Init Completed");
 }
 
+void EventManager::destroy() {
+
+}
+
+SDL_bool EventManager::getExitLoop() {
+    return this->exitLoop;
+}
+
 void EventManager::checkEventQueue() {
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
             case SDL_EVENT_QUIT:
+                this->exitLoop = SDL_TRUE;
                 this->sendQuitEventToAllListeners();
                 break;
             case SDL_EVENT_KEY_DOWN:

@@ -2,10 +2,9 @@
 #include <SDL3_image/SDL_image.h>
 #include <SDL3_mixer/SDL_mixer.h>
 
-#include "../modules/Core/include/GameBaseEntity.h"
+#include "../modules/Core/Core.hpp"
 #include "events/CloseEvent.h"
 #include <EventManager.h>
-#include <ResourcesManager.h>
 #include <Renderer.h>
 
 int main() {
@@ -13,11 +12,12 @@ int main() {
     Mix_Music* music = NULL;
     SDL_Texture *texture1 = NULL;
     SDL_Texture *texture2 = NULL;
-    auto* entity1 = new GameBaseEntity();
+    auto* entity1 = new GameEntity();
     auto* closeEvent = new CloseEvent();
     auto* eventManager = new EventManager();
     auto* diskManager = new ResourcesManager();
     auto* renderManager = new Renderer();
+    auto* coreSystem = new CoreSystem();
 
     SDL_AudioSpec spec;
     spec.freq = MIX_DEFAULT_FREQUENCY;
@@ -31,8 +31,10 @@ int main() {
 
     diskManager->load3DModels();
 
-    eventManager->init();
-    renderManager->init();
+    coreSystem->setRenderSystem(renderManager);
+    coreSystem->setInputSystem(eventManager);
+
+    coreSystem->init();
 
     eventManager->addQuitEventListener(closeEvent);
 //    eventManager->addMouseEventListener(closeEvent);
@@ -81,19 +83,8 @@ int main() {
     rect2->x = 500;
     rect2->y = 100;
 
-    while (!closeEvent->getExitLoop()) {
-        eventManager->checkEventQueue();
+    Uint16 algo = coreSystem->getConfig()->getPropertyAsUInt16("algo");
 
-        renderManager->cleanScreen();
-
-        SDL_RenderTexture(renderManager->renderer, texture1, NULL, rect1);
-        SDL_RenderTexture(renderManager->renderer, texture2, NULL, rect2);
-
-        renderManager->render();
-    }
-
-    SDL_DestroyRenderer(renderManager->renderer);
-    SDL_DestroyWindow(renderManager->window);
-    SDL_Quit();
+    coreSystem->startGame();
     return 0;
 }
