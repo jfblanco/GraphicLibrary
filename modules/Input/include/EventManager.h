@@ -1,7 +1,7 @@
 #ifndef GAMEENGINE_EVENTMANAGER_H
 #define GAMEENGINE_EVENTMANAGER_H
 
-#include <SDL3/SDL.h>
+#include <SDL2/SDL.h>
 #include <InputSystem.h>
 #include <vector>
 

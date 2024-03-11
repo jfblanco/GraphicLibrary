@@ -46,23 +46,23 @@ SDL_bool EventManager::getExitLoop() {
 void EventManager::checkEventQueue() {
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
-            case SDL_EVENT_QUIT:
+            case SDL_QUIT:
                 this->exitLoop = SDL_TRUE;
                 this->sendQuitEventToAllListeners();
                 break;
-            case SDL_EVENT_KEY_DOWN:
+            case SDL_KEYDOWN:
                 this->sendKeyboardEventToAllListeners();
                 break;
-            case SDL_EVENT_MOUSE_MOTION:
+            case SDL_MOUSEMOTION:
                 this->sendMouseEventToAllListeners();
                 break;
-            case SDL_EVENT_MOUSE_BUTTON_DOWN:
+            case SDL_MOUSEBUTTONDOWN:
                 this->sendMouseEventToAllListeners();
                 break;
-            case SDL_EVENT_MOUSE_BUTTON_UP:
+            case SDL_MOUSEBUTTONUP:
                 this->sendMouseEventToAllListeners();
                 break;
-            case SDL_EVENT_MOUSE_WHEEL:
+            case SDL_MOUSEWHEEL:
                 this->sendMouseEventToAllListeners();
                 break;
         }
@@ -80,16 +80,16 @@ void EventManager::sendKeyboardEventToAllListeners() {
 void EventManager::sendMouseEventToAllListeners() {
     for (EventListener* item : this->mouseEventListeners) {
         if(item != nullptr) {
-            if(this->event.type == SDL_EVENT_MOUSE_WHEEL){
+            if(this->event.type == SDL_MOUSEWHEEL){
                 item->mouseScroll(this->event);
             }
-            if(this->event.type == SDL_EVENT_MOUSE_MOTION){
+            if(this->event.type == SDL_MOUSEMOTION){
                 item->mouseMove(this->event);
             }
-            if(this->event.type == SDL_EVENT_MOUSE_BUTTON_DOWN){
+            if(this->event.type == SDL_MOUSEBUTTONDOWN){
                 item->mouseButtonPressed(this->event);
             }
-            if(this->event.type == SDL_EVENT_MOUSE_BUTTON_UP){
+            if(this->event.type == SDL_MOUSEBUTTONUP){
                 item->mouseButtonReleased(this->event);
             }
         }

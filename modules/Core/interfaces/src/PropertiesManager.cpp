@@ -27,7 +27,7 @@ void saveProperty(Configuration *config, Json::Value::const_iterator property) {
         config->stringProperties.insert(std::pair<std::string, std::string>(property.key().asString(), property->asString()));
     }
     if(property->isBool()) {
-        config->boolProperties.insert(std::pair<std::string, SDL_bool>(property.key().asString(), property->asBool()));
+//        config->boolProperties.insert(std::pair<std::string, SDL_bool>(property.key().asString(), property->asBool()));
     }
     if(property->isUInt64()) {
         config->uintProperties.insert(std::pair<std::string, Uint64>(property.key().asString(), property->asUInt64()));

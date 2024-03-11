@@ -1,7 +1,3 @@
-//
-// Created by Francisco Blanco on 2/24/2024.
-//
-
 #ifndef ENGINETEST_RENDERINGSYSTEM_H
 #define ENGINETEST_RENDERINGSYSTEM_H
 

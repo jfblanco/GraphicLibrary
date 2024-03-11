@@ -22,7 +22,8 @@
     "enableEventManagerLogger": true
   },
   "shaderManager": {
-    "shaderConfigurationFile": "res/shadersConfig.json"
+    "shaderConfigurationFile": "res/shadersConfig.json",
+    "shadersFolder": "res/shaders"
   },
   "algo": 65527
 }

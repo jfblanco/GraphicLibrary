@@ -1,7 +1,7 @@
 #ifndef ENGINETEST_INPUTSYSTEM_H
 #define ENGINETEST_INPUTSYSTEM_H
 
-#include "SDL3/SDL.h"
+#include <SDL2/SDL.h>
 
 class InputSystem {
 public:

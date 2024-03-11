@@ -1,89 +1,160 @@
-#include <SDL3/SDL.h>
-#include <SDL3_image/SDL_image.h>
-#include <SDL3_mixer/SDL_mixer.h>
+#include <SDL2/SDL.h>
+#include <SDL2_image/include/SDL2/SDL_image.h>
 
 #include "../modules/Core/Core.hpp"
+#include "../modules/Render/include/ShaderFactoryOpenGL.h"
 #include "events/CloseEvent.h"
+#include <Material.h>
 #include <EventManager.h>
-#include <Renderer.h>
+#include <RendererOpenGL.h>
+#include <ShaderManagerOpenGL.h>
+#include <iostream>
 
-int main() {
+typedef struct {
+    GLenum       type;
+    const char*  filename;
+    GLuint       shader;
+} ShaderInfo;
 
-    Mix_Music* music = NULL;
-    SDL_Texture *texture1 = NULL;
-    SDL_Texture *texture2 = NULL;
+static const GLchar*
+ReadShader( const char* filename )
+{
+    #ifdef WIN32
+        FILE* infile;
+        fopen_s( &infile, filename, "rb" );
+    #else
+        FILE* infile = fopen( filename, "rb" );
+    #endif // WIN32
+
+        if ( !infile ) {
+    #ifdef _DEBUG
+            std::cerr << "Unable to open file '" << filename << "'" << std::endl;
+    #endif /* DEBUG */
+            return NULL;
+        }
+
+        fseek( infile, 0, SEEK_END );
+        int len = ftell( infile );
+        fseek( infile, 0, SEEK_SET );
+
+        GLchar* source = new GLchar[len+1];
+
+        fread( source, 1, len, infile );
+        fclose( infile );
+
+        source[len] = 0;
+
+        return const_cast<const GLchar*>(source);
+}
+
+GLint LoadShaders(ShaderInfo* shaders) {
+
+    if ( shaders == NULL ) { return 0; }
+
+    GLuint program = glCreateProgram();
+
+    ShaderInfo* entry = shaders;
+    while ( entry->type != GL_NONE ) {
+        GLuint shader = glCreateShader( entry->type );
+
+        entry->shader = shader;
+
+        const GLchar* source = ReadShader( entry->filename );
+        if ( source == NULL ) {
+            for ( entry = shaders; entry->type != GL_NONE; ++entry ) {
+                glDeleteShader( entry->shader );
+                entry->shader = 0;
+            }
+
+            return 0;
+        }
+
+        glShaderSource( shader, 1, &source, NULL );
+        delete [] source;
+
+        glCompileShader( shader );
+
+        GLint compiled;
+        glGetShaderiv( shader, GL_COMPILE_STATUS, &compiled );
+        if ( !compiled ) {
+        #ifdef _DEBUG
+        GLsizei len;
+        glGetShaderiv( shader, GL_INFO_LOG_LENGTH, &len );
+
+        GLchar* log = new GLchar[len+1];
+        glGetShaderInfoLog( shader, len, &len, log );
+        std::cerr << "Shader compilation failed: " << log << std::endl;
+        delete [] log;
+        #endif /* DEBUG */
+
+        return 0;
+        }
+
+        glAttachShader( program, shader );
+
+        ++entry;
+    }
+
+    glLinkProgram( program );
+
+    GLint linked;
+    glGetProgramiv( program, GL_LINK_STATUS, &linked );
+    if ( !linked ) {
+    #ifdef _DEBUG
+    GLsizei len;
+    glGetProgramiv( program, GL_INFO_LOG_LENGTH, &len );
+
+    GLchar* log = new GLchar[len+1];
+    glGetProgramInfoLog( program, len, &len, log );
+    std::cerr << "Shader linking failed: " << log << std::endl;
+    delete [] log;
+    #endif /* DEBUG */
+
+    for ( entry = shaders; entry->type != GL_NONE; ++entry ) {
+        glDeleteShader( entry->shader );
+        entry->shader = 0;
+    }
+
+    return 0;
+    }
+
+    return program;
+}
+
+#define BUFFER_OFFSET(a) ((void*)(a))
+
+int main(int argc, char* argv[]) {
     auto* entity1 = new GameEntity();
     auto* closeEvent = new CloseEvent();
     auto* eventManager = new EventManager();
     auto* diskManager = new ResourcesManager();
-    auto* renderManager = new Renderer();
+    auto* renderManager = new RendererOpenGL();
     auto* coreSystem = new CoreSystem();
-
-    SDL_AudioSpec spec;
-    spec.freq = MIX_DEFAULT_FREQUENCY;
-    spec.format = MIX_DEFAULT_FORMAT;
-    spec.channels = MIX_DEFAULT_CHANNELS;
-
-    if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-        SDL_Log("Couldn't initialize SDL: %s\n",SDL_GetError());
-        return(255);
-    }
-
-    diskManager->load3DModels();
+    auto* shaderFactory = new ShaderFactoryOpenGL();
+    auto* shaderManager = new ShaderManagerOpenGL();
 
     coreSystem->setRenderSystem(renderManager);
     coreSystem->setInputSystem(eventManager);
-
+    coreSystem->setShaderFactory(shaderFactory);
+    coreSystem->setShaderSystem(shaderManager);
     coreSystem->init();
 
+    closeEvent->camera = renderManager->camera;
     eventManager->addQuitEventListener(closeEvent);
+    eventManager->addKeyBoardEventListener(closeEvent);
 //    eventManager->addMouseEventListener(closeEvent);
 
     if(!IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG)) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "SDL Image could not be initialized! Error: %s", SDL_GetError());
     }
 
-    SDL_Surface* surface1 = IMG_Load("assets/image2.jpg");
-    SDL_Surface* surface2 = IMG_Load("assets/image1.png");
-
-    SDL_Log("%s loaded image 1 x: %d y: %d", "Everything worked!", surface1->w, surface1->h);
-    SDL_Log("%s loaded image 2 x: %d y: %d", "Everything worked!", surface2->w, surface2->h);
-
-    if (Mix_OpenAudio(0, &spec) < 0) {
-        SDL_Log("Couldn't open audio: %s\n", SDL_GetError());
-        return(2);
-    } else {
-        Mix_QuerySpec(&spec.freq, &spec.format, &spec.channels);
-        SDL_Log("Opened audio at %d Hz %d bit%s %s audio buffer\n", spec.freq,
-                (spec.format&0xFF),
-                (SDL_AUDIO_ISFLOAT(spec.format) ? " (float)" : ""),
-                (spec.channels > 2) ? "surround" : (spec.channels > 1) ? "stereo" : "mono");
-    }
-
-    music = Mix_LoadMUS("assets/bata.ogg");
-//    if(music != NULL) {
-//        Mix_FadeInMusic(music, 5, 2000);
-//    } else {
-//        SDL_Log("Couldn't open audio: %s\n", SDL_GetError());
-//    }
-
-    texture1 = SDL_CreateTextureFromSurface(renderManager->renderer, surface1);
-    texture2 = SDL_CreateTextureFromSurface(renderManager->renderer, surface2);
-
-    SDL_DestroySurface(surface1);
-    SDL_DestroySurface(surface2);
-
-    SDL_FRect *rect1 = new SDL_FRect();
-    rect1->w = 300;
-    rect1->h = 300;
-
-    SDL_FRect *rect2 = new SDL_FRect();
-    rect2->w = 450;
-    rect2->h = 250;
-    rect2->x = 500;
-    rect2->y = 100;
-
     Uint16 algo = coreSystem->getConfig()->getPropertyAsUInt16("algo");
+    auto* cube = coreSystem->getResourcesSystem()->getRenderable("Ball");
+    cube->material = new Material("color", (ShaderOpenGL*) coreSystem->getShaderSystem()->findShader("color"));
+
+    auto* cubeRenderable = new RenderableOpenGL(cube);
+    renderManager->renderableFactoryOpenGl->createRenderableBuffers(cubeRenderable);
+    renderManager->renderables.push_back(cubeRenderable);
 
     coreSystem->startGame();
     return 0;

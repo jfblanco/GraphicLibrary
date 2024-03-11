@@ -2,6 +2,8 @@
 #define ENGINETEST_CONFIGURATIONS_H
 
 #include <string>
+#include <SDL2/SDL.h>
+#include <map>
 #include <utility>
 
 class Configuration {

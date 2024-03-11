@@ -1,11 +1,7 @@
-//
-// Created by Francisco Blanco on 12/28/2023.
-//
-
 #ifndef GAMEENGINE_EVENTLISTENER_H
 #define GAMEENGINE_EVENTLISTENER_H
 
-#include <SDL3/SDL.h>
+#include <SDL2/SDL.h>
 
 class EventListener {
 public:
