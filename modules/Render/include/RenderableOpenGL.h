@@ -4,9 +4,12 @@
 #include <Renderable.h>
 #include <GL/glew.h>
 
+class MaterialOpenGL;
+class ShaderManager;
 class RenderableOpenGL {
 public:
     Renderable *renderable;
+    MaterialOpenGL *materialOpenGL;
     GLuint vao;
     GLuint vertexVBO;
     GLuint normalVBO;
@@ -14,6 +17,7 @@ public:
     GLuint indexVBO;
 
     RenderableOpenGL(Renderable *_renderable) { this->renderable = _renderable; };
+    void prepareMaterial(ShaderManager*);
     ~RenderableOpenGL() = default;
 
 };

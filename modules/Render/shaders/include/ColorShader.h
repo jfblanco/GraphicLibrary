@@ -9,15 +9,6 @@ class ColorShader : public ShaderOpenGL {
 public:
     ColorShader() = default;
     ~ColorShader() = default;
-
-    Sint16 projectionModelViewUniform;
-    Sint16 vertexAttribute;
-    Sint16 normalAttribute;
-    Sint16 uvCoordAttribute;
-
-    void findUniformVariables() override;
-    void useUniformVariables(RenderingSystem*) override;
-    void findVertexAttributeVariables() override;
 };
 
 

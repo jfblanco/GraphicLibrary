@@ -12,8 +12,9 @@
 class Material;
 class Renderable {
 public:
-    glm::vec4 position;
+    glm::vec3 position;
     glm::quat rotation;
+    glm::vec3 eulerAngles;
     glm::vec3 scale;
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normals;
@@ -22,10 +23,18 @@ public:
     std::vector<glm::vec4> weights;
     std::vector<GLuint> index;
     Material *material;
+    glm::mat4x4 modelMatrix = glm::mat4x4(1.0f,0.0f,0.0f,0.0f,
+                                          0.0f,1.0f,0.0f,0.0f,
+                                          0.0f,0.0f,1.0f,0.0f,
+                                          0.0f,0.0f,0.0f,1.0f);
     std::string name;
 
     Renderable() = default;
     ~Renderable() = default;
+
+    void setPosition(GLfloat x, GLfloat y, GLfloat z);
+    void setRotation(GLfloat roll, GLfloat pitch, GLfloat yaw);
+    void updateModelMatrix();
 };
 
 #endif //ENGINETEST_RENDERABLE_H

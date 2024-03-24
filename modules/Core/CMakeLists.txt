@@ -17,6 +17,7 @@ if(ENGINE_CORE_SHARED)
     message("Core Engine Using Shared Library ENGINE_CORE_SHARED = ${ENGINE_CORE_SHARED}")
     add_library(Core SHARED
             entities/src/GameEntity.cpp
+            entities/src/Renderable.cpp
             interfaces/src/RenderingSystemMock.cpp
             interfaces/src/InputSystemMock.cpp
             interfaces/src/PropertiesManager.cpp
@@ -32,6 +33,7 @@ else(ENGINE_CORE_SHARED)
     message("Core Engine Using Static Library ENGINE_CORE_SHARED = ${ENGINE_CORE_SHARED}")
     add_library(Core STATIC
             entities/src/GameEntity.cpp
+            entities/src/Renderable.cpp
             interfaces/src/RenderingSystemMock.cpp
             interfaces/src/InputSystemMock.cpp
             interfaces/src/PropertiesManager.cpp
@@ -77,4 +79,5 @@ file(COPY external/libpng/bin/libpng16.dll DESTINATION "${CMAKE_CURRENT_BINARY_D
 file(COPY external/zlib/bin/zlib.dll DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 
 file(COPY res/assets/models DESTINATION "${CMAKE_BINARY_DIR}/src/res")
+file(COPY res/assets/images DESTINATION "${CMAKE_BINARY_DIR}/src/res")
 file(COPY res/properties.json DESTINATION "${CMAKE_BINARY_DIR}/src/res")

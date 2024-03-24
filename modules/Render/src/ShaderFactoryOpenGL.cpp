@@ -8,6 +8,8 @@
 #include <ShaderManager.h>
 #include "../include/ShaderFactoryOpenGL.h"
 #include "../shaders/include/ColorShader.h"
+#include "../shaders/include/NormalShader.h"
+#include "../shaders/include/TextureShader.h"
 
 void checkCompilingStatusLog(GLuint shaderId, GLenum flag) {
     GLint compileStatus = GL_TRUE;
@@ -67,48 +69,62 @@ char* readFile(const GLchar* _file, GLint* lenght){
     }
 }
 
+void createShader(ShaderOpenGL* shader, const GLchar *name, const GLchar *vertexPath, const GLchar *fragmentPath) {
+    shader->name = name;
+
+    shader->vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    shader->fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    shader->shaderProgram = glCreateProgram();
+
+    GLint fileSizeVertex;
+    GLint fileSizeFragment;
+
+    GLchar* codeVertex = readFile(vertexPath, &fileSizeVertex);
+    GLchar* codeFragment = readFile(fragmentPath, &fileSizeFragment);
+
+    glShaderSource(shader->vertexShader, 1, &codeVertex, nullptr);
+    glShaderSource(shader->fragmentShader, 1, &codeFragment, nullptr);
+
+    glCompileShader(shader->vertexShader);
+    glCompileShader(shader->fragmentShader);
+
+    checkCompilingStatusLog(shader->vertexShader, GL_COMPILE_STATUS);
+    checkCompilingStatusLog(shader->fragmentShader, GL_COMPILE_STATUS);
+
+    glAttachShader(shader->shaderProgram, shader->vertexShader);
+    glAttachShader(shader->shaderProgram, shader->fragmentShader);
+
+    glLinkProgram(shader->shaderProgram);
+    checkLinkingStatusLog(shader->shaderProgram, GL_LINK_STATUS);
+
+    glUseProgram(shader->shaderProgram);
+    shader->findUniformVariables();
+    shader->findVertexAttributeVariables();
+    if(glIsProgram(shader->shaderProgram) == GL_FALSE) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "[ShaderFactoryOpenGL] [    Error");
+    }
+}
+
 void ShaderFactoryOpenGL::init(Configuration *configuration, ShaderManager *shaderManager) {
     std::string path = configuration->getPropertyAsString("shadersFolder");
     std::string message("[ShaderFactoryOpenGL] Loading: ");
     SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, message.append(path).c_str());
 
     SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "[ShaderFactoryOpenGL] [    Loading Simple Shader]");
+
     auto* colorShader = new ColorShader();
-    colorShader->name = "color";
+    auto* normalShader = new NormalShader();
+    auto* textureShader = new TextureShader();
 
-    colorShader->vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    colorShader->fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    colorShader->shaderProgram = glCreateProgram();
+    createShader(colorShader, "color", (path + "/simple.vert").c_str(), (path + "/simple.frag").c_str());
+    createShader(normalShader, "normals", (path + "/normal.vert").c_str(), (path + "/normal.frag").c_str());
+    createShader(textureShader, "texture", (path + "/texture.vert").c_str(), (path + "/texture.frag").c_str());
 
-    GLint fileSizeVertex;
-    GLint fileSizeFragment;
-
-    GLchar* codeVertex = readFile((path + "/simple.vert").c_str(), &fileSizeVertex);
-    GLchar* codeFragment = readFile((path + "/simple.frag").c_str(), &fileSizeFragment);
-
-    glShaderSource(colorShader->vertexShader, 1, &codeVertex, nullptr);
-    glShaderSource(colorShader->fragmentShader, 1, &codeFragment, nullptr);
-
-    glCompileShader(colorShader->vertexShader);
-    glCompileShader(colorShader->fragmentShader);
-
-    checkCompilingStatusLog(colorShader->vertexShader, GL_COMPILE_STATUS);
-    checkCompilingStatusLog(colorShader->fragmentShader, GL_COMPILE_STATUS);
-
-    glAttachShader(colorShader->shaderProgram, colorShader->vertexShader);
-    glAttachShader(colorShader->shaderProgram, colorShader->fragmentShader);
-
-    glLinkProgram(colorShader->shaderProgram);
-    checkLinkingStatusLog(colorShader->shaderProgram, GL_LINK_STATUS);
-
-    glUseProgram(colorShader->shaderProgram);
-    colorShader->findUniformVariables();
-    colorShader->findVertexAttributeVariables();
-    if(glIsProgram(colorShader->shaderProgram) == GL_FALSE) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "[ShaderFactoryOpenGL] [    Error");
-    }
-    glUseProgram(0);
     shaderManager->addShader(colorShader);
+    shaderManager->addShader(normalShader);
+    shaderManager->addShader(textureShader);
+
+    glUseProgram(0);
     SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "[ShaderFactoryOpenGL] [    Simple Shader Loaded]");
 
     SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "[ShaderFactoryOpenGL] Shaders loading complete");

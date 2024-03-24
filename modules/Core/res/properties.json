@@ -13,6 +13,7 @@
   },
   "resourceManager": {
     "modelPathFolder": "res/models/",
+    "imagePathFolder": "res/images/",
     "shaderPathFolder": "res/shaders/"
   },
   "logManagger": {
