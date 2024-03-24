@@ -1,6 +1,7 @@
 #include "CloseEvent.h"
 #include <SDL2/SDL.h>
 #include <Camera.h>
+#include <Renderable.h>
 #include <glm/ext/matrix_transform.hpp>
 
 void CloseEvent::quitTimeEvent(SDL_Event event) {
@@ -10,7 +11,25 @@ void CloseEvent::quitTimeEvent(SDL_Event event) {
 }
 
 void CloseEvent::mouseMove(SDL_Event event) {
-    SDL_Log("X: %f Y: %f", event.motion.x, event.motion.y);
+    if(isLeftMouseClicked && (cubeElement != nullptr)) {
+        if(event.type == SDL_MOUSEMOTION) {
+            cubeElement->setRotation(cubeElement->eulerAngles.x + (0.01 * event.motion.yrel),
+                                     cubeElement->eulerAngles.y + (0.01 * event.motion.xrel),
+                                     cubeElement->eulerAngles.z);
+        }
+    }
+}
+
+void CloseEvent::mouseButtonPressed(SDL_Event event) {
+    if(event.button.button == SDL_BUTTON_LEFT) {
+        this->isLeftMouseClicked = SDL_TRUE;
+    }
+}
+
+void CloseEvent::mouseButtonReleased(SDL_Event event) {
+    if(event.button.button == SDL_BUTTON_LEFT) {
+        this->isLeftMouseClicked = SDL_FALSE;
+    }
 }
 
 void CloseEvent::keyDownTimeEvent(SDL_Event event) {

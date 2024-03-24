@@ -6,7 +6,7 @@
 class MockShader : public Shader {
 public:
     void findUniformVariables() { };
-    void useUniformVariables(RenderingSystem*) { };
+    void useUniformVariables(RenderingSystem*, Renderable*) { };
     void findVertexAttributeVariables() { };
 };
 

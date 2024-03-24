@@ -26,8 +26,13 @@ if(ENGINE_RENDERER_SHARED)
     add_library(RenderLibrary SHARED
             src/ShaderFactoryOpenGL.cpp
             src/RenderableFactoryOpenGL.cpp
+            src/MaterialOpenGL.cpp
+            src/ShaderOpenGL.cpp
+            src/RenderableOpenGL.cpp
             src/ShaderManagerOpenGL.cpp
             shaders/src/ColorShader.cpp
+            shaders/src/NormalShader.cpp
+            shaders/src/TextureShader.cpp
             src/RendererOpenGL.cpp
     )
 else(ENGINE_RENDERER_SHARED)
@@ -36,7 +41,12 @@ else(ENGINE_RENDERER_SHARED)
                 src/ShaderFactoryOpenGL.cpp
                 src/RenderableFactoryOpenGL.cpp
                 src/ShaderManagerOpenGL.cpp
+                src/MaterialOpenGL.cpp
+                src/ShaderOpenGL.cpp
+                src/RenderableOpenGL.cpp
                 shaders/src/ColorShader.cpp
+                shaders/src/NormalShader.cpp
+                shaders/src/TextureShader.cpp
             src/RendererOpenGL.cpp
     )
 endif(ENGINE_RENDERER_SHARED)

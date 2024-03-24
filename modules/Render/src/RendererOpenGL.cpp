@@ -5,6 +5,7 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <Material.h>
+#include <MaterialOpenGL.h>
 #include <Shader.h>
 #include <vector>
 
@@ -53,7 +54,7 @@ void RendererOpenGL::init() {
     }
 
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_ALWAYS);
+    glDepthFunc(GL_LESS);
 
     this->logSystemInformation();
     SDL_Log("[ RendererOpenGL ]   Initialization complete");
@@ -68,15 +69,26 @@ void RendererOpenGL::destroy() {
 
 void RendererOpenGL::render() {
     for(auto* renderable : renderables) {
-        glUseProgram(renderable->renderable->material->shader->shaderProgram);
-        renderable->renderable->material->shader->useUniformVariables(this);
+        glUseProgram(renderable->materialOpenGL->shaderOpenGL->shaderProgram);
+        renderable->materialOpenGL->shaderOpenGL->useUniformVariables(this, renderable->renderable);
 
+        renderable->materialOpenGL->setTextures();
         glBindVertexArray(renderable->vao);
 
         glBindBuffer(GL_ARRAY_BUFFER, renderable->vertexVBO);
-        glVertexAttribPointer(((ColorShader*)renderable->renderable->material->shader)->vertexAttribute,
+        glVertexAttribPointer(renderable->materialOpenGL->shaderOpenGL->vertexAttribute,
                               3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), BUFFER_OFFSET(0));
-        glEnableVertexAttribArray(((ColorShader*)renderable->renderable->material->shader)->vertexAttribute);
+        glEnableVertexAttribArray(renderable->materialOpenGL->shaderOpenGL->vertexAttribute);
+
+        glBindBuffer(GL_ARRAY_BUFFER, renderable->normalVBO);
+        glVertexAttribPointer(renderable->materialOpenGL->shaderOpenGL->normalAttribute,
+                              3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), BUFFER_OFFSET(0));
+        glEnableVertexAttribArray(renderable->materialOpenGL->shaderOpenGL->normalAttribute);
+
+        glBindBuffer(GL_ARRAY_BUFFER, renderable->textureVBO);
+        glVertexAttribPointer(renderable->materialOpenGL->shaderOpenGL->uvCoordAttribute,
+                              2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), BUFFER_OFFSET(0));
+        glEnableVertexAttribArray(renderable->materialOpenGL->shaderOpenGL->uvCoordAttribute);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderable->indexVBO);
         glDrawElements(GL_TRIANGLES, renderable->renderable->index.size(), GL_UNSIGNED_INT, NULL);
@@ -87,7 +99,7 @@ void RendererOpenGL::render() {
 void RendererOpenGL::cleanScreen() {
     glClearColor(0.9f, 0.85f, 0.9f, 1.f);
     glClearDepth(1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void RendererOpenGL::logSystemInformation() {

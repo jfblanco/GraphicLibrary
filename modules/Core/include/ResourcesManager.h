@@ -27,7 +27,8 @@ public:
 
     std::map<std::string, Renderable*> models;
     std::map<std::string, Skin*> skins;
-    std::string pathToResources;
+    std::string pathToModelResources;
+    std::string pathToImagesResources;
     EntityManager* entityManager{};
 
     void printModelInformation(Renderable*);
