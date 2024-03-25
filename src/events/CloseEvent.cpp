@@ -33,21 +33,23 @@ void CloseEvent::mouseButtonReleased(SDL_Event event) {
 }
 
 void CloseEvent::keyDownTimeEvent(SDL_Event event) {
-    if(event.key.keysym.sym == SDLK_w) {
-        this->camera->position.y += 0.2;
-        this->camera->point.y += 0.2;
+    if(event.key.keysym.sym == SDLK_z) {
+        cubeElement->setPosition(cubeElement->position.x,cubeElement->position.y,cubeElement->position.z + 0.5);
     }
-    if(event.key.keysym.sym == SDLK_s) {
-        this->camera->position.y -= 0.2;
-        this->camera->point.y -= 0.2;
+    if(event.key.keysym.sym == SDLK_x) {
+        cubeElement->setPosition(cubeElement->position.x,cubeElement->position.y,cubeElement->position.z - 0.5);
     }
     if(event.key.keysym.sym == SDLK_d) {
-        this->camera->position.x += 0.2;
-        this->camera->point.x += 0.2;
+        cubeElement->setPosition(cubeElement->position.x + 0.05,cubeElement->position.y,cubeElement->position.z);
     }
     if(event.key.keysym.sym == SDLK_a) {
-        this->camera->position.x -= 0.2;
-        this->camera->point.x -= 0.2;
+        cubeElement->setPosition(cubeElement->position.x - 0.05,cubeElement->position.y,cubeElement->position.z);
     }
-    this->camera->viewMatrix = glm::lookAt(this->camera->position,this->camera->point,this->camera->orientation);
+    if(event.key.keysym.sym == SDLK_w) {
+        cubeElement->setPosition(cubeElement->position.x,cubeElement->position.y + 0.05,cubeElement->position.z);
+    }
+    if(event.key.keysym.sym == SDLK_s) {
+        cubeElement->setPosition(cubeElement->position.x,cubeElement->position.y - 0.05,cubeElement->position.z);
+    }
+//    this->camera->viewMatrix = glm::lookAt(this->camera->position,this->camera->point,this->camera->orientation);
 }

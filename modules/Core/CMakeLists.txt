@@ -18,6 +18,7 @@ if(ENGINE_CORE_SHARED)
     add_library(Core SHARED
             entities/src/GameEntity.cpp
             entities/src/Renderable.cpp
+            entities/src/Light.cpp
             interfaces/src/RenderingSystemMock.cpp
             interfaces/src/InputSystemMock.cpp
             interfaces/src/PropertiesManager.cpp
@@ -34,6 +35,7 @@ else(ENGINE_CORE_SHARED)
     add_library(Core STATIC
             entities/src/GameEntity.cpp
             entities/src/Renderable.cpp
+            entities/src/Light.cpp
             interfaces/src/RenderingSystemMock.cpp
             interfaces/src/InputSystemMock.cpp
             interfaces/src/PropertiesManager.cpp

@@ -10,6 +10,7 @@
 #include "../shaders/include/ColorShader.h"
 #include "../shaders/include/NormalShader.h"
 #include "../shaders/include/TextureShader.h"
+#include "../shaders/include/LightningShader.h"
 
 void checkCompilingStatusLog(GLuint shaderId, GLenum flag) {
     GLint compileStatus = GL_TRUE;
@@ -115,14 +116,17 @@ void ShaderFactoryOpenGL::init(Configuration *configuration, ShaderManager *shad
     auto* colorShader = new ColorShader();
     auto* normalShader = new NormalShader();
     auto* textureShader = new TextureShader();
+    auto* lightningShader = new LightningShader();
 
     createShader(colorShader, "color", (path + "/simple.vert").c_str(), (path + "/simple.frag").c_str());
     createShader(normalShader, "normals", (path + "/normal.vert").c_str(), (path + "/normal.frag").c_str());
     createShader(textureShader, "texture", (path + "/texture.vert").c_str(), (path + "/texture.frag").c_str());
+    createShader(lightningShader, "lightning", (path + "/lightning.vert").c_str(), (path + "/lightning.frag").c_str());
 
     shaderManager->addShader(colorShader);
     shaderManager->addShader(normalShader);
     shaderManager->addShader(textureShader);
+    shaderManager->addShader(lightningShader);
 
     glUseProgram(0);
     SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "[ShaderFactoryOpenGL] [    Simple Shader Loaded]");
