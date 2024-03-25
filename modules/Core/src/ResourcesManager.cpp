@@ -24,7 +24,7 @@
 #include <fstream>
 
 struct ChannelGLTF {
-    Uint32 node;
+    Uint16 node;
     std::vector<float> keyframes;
     std::vector<glm::vec4> rotation;
     std::vector<glm::vec3> translation;
@@ -33,14 +33,19 @@ struct ChannelGLTF {
 };
 
 struct MetallicRoughnessGLTF {
-    Uint16 baseColorTexture = SDL_MAX_UINT16;
+    Uint8 baseColorTexture = SDL_MAX_UINT8;
     GLfloat metallicFactor;
     GLfloat roughnessFactor;
 
 };
 
+struct NormalGLTF {
+    Uint8 texture = SDL_MAX_UINT8;
+};
+
 struct MaterialGLTF {
     std::string name;
+    NormalGLTF normalGltf;
     MetallicRoughnessGLTF metallicRoughnessGltf;
 };
 
@@ -50,8 +55,8 @@ struct ImageGLTF {
 };
 
 struct TextureGLTF {
-    Uint32 sampler;
-    Uint32 source;
+    Uint8 sampler;
+    Uint8 source;
 };
 
 struct SkinGLTF {
@@ -68,7 +73,7 @@ struct MeshGLTF {
     std::vector<glm::vec2> textureCoordinates;
     std::vector<uint8_t> joints;
     std::vector<glm::vec4> weights;
-    Uint16 material = SDL_MAX_UINT16;
+    Uint8 material = SDL_MAX_UINT8;
 };
 
 struct AnimationGLTF {
@@ -82,7 +87,7 @@ struct NodeGLTF {
     glm::vec4 position = glm::vec4(0.0f,0.0f,0.0f,0.0f);
     glm::vec3 scale = glm::vec3(1.0f,1.0f,1.0f);
     std::vector<Uint32> children;
-    Uint32 mesh = -1;
+    Uint8 mesh = SDL_MAX_UINT8;
     SkinGLTF* skin;
 };
 
@@ -365,13 +370,21 @@ void loadGLTFMeshFromFile(FileGLTF *_fileGltf, Json::Value _mesh, const Json::Va
 
 Material* createMaterial(MaterialGLTF materialGltf, FileGLTF *_fileGltf, ResourcesManager *resourcesManager) {
     auto* material = new Material(materialGltf.name.c_str());
-    if(materialGltf.metallicRoughnessGltf.baseColorTexture != SDL_MAX_UINT16) {
+    if(materialGltf.metallicRoughnessGltf.baseColorTexture != SDL_MAX_UINT8) {
         TextureGLTF textureGLTF = _fileGltf->textures[materialGltf.metallicRoughnessGltf.baseColorTexture];
         ImageGLTF imageGltf = _fileGltf->images[textureGLTF.source];
         auto* texture = new Texture();
         texture->name = imageGltf.name;
         texture->source = resourcesManager->pathToImagesResources + imageGltf.source;
         material->albedo = texture;
+    }
+    if(materialGltf.normalGltf.texture != SDL_MAX_UINT8) {
+        TextureGLTF textureGLTF = _fileGltf->textures[materialGltf.normalGltf.texture];
+        ImageGLTF imageGltf = _fileGltf->images[textureGLTF.source];
+        auto* texture = new Texture();
+        texture->name = imageGltf.name;
+        texture->source = resourcesManager->pathToImagesResources + imageGltf.source;
+        material->normal = texture;
     }
     return material;
 }
@@ -389,7 +402,7 @@ Renderable* createModelFromNode(NodeGLTF *nodeGltf, MeshGLTF *meshGltf, FileGLTF
     model->normals.insert(model->normals.end(), meshGltf->normals.begin(), meshGltf->normals.end());
     model->texture.insert(model->texture.end(), meshGltf->textureCoordinates.begin(), meshGltf->textureCoordinates.end());
     model->weights.insert(model->weights.end(), meshGltf->weights.begin(), meshGltf->weights.end());
-    if(meshGltf->material != SDL_MAX_UINT16) {
+    if(meshGltf->material != SDL_MAX_UINT8) {
         model->material = createMaterial(_fileGltf->materials[meshGltf->material], _fileGltf, resourcesManager);
     }
     for(int i=0; i<meshGltf->joints.size();i+=4) {
@@ -534,7 +547,7 @@ void createAnimationFromNode(ResourcesManager *_resourceManager, const std::stri
 
 void ResourcesManager::createEngineElements(FileGLTF *_fileGltf) {
     for(auto& node : _fileGltf->nodes) {
-        if(node.mesh != -1) {
+        if(node.mesh != SDL_MAX_UINT8) {
             this->models.insert(std::pair<std::string, Renderable*>(node.name, createModelFromNode(&node, &(_fileGltf->meshes[node.mesh]), _fileGltf, this)));
         }
     }
@@ -687,6 +700,9 @@ void loadGLTFMaterialsFromFile(FileGLTF *_fileGltf, Json::Value _material) {
     }
     if(!_material["pbrMetallicRoughness"]["metallicFactor"].isNull()) {
         material.metallicRoughnessGltf.metallicFactor = _material["pbrMetallicRoughness"]["metallicFactor"].as<GLfloat>();
+    }
+    if(!_material["normalTexture"]["index"].isNull()) {
+        material.normalGltf.texture = _material["normalTexture"]["index"].as<Uint32>();
     }
     _fileGltf->materials.push_back(material);
 }
