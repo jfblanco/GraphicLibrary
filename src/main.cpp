@@ -9,6 +9,7 @@
 #include <RendererOpenGL.h>
 #include <ShaderManagerOpenGL.h>
 #include <LightningShader.h>
+#include <NormalMappingShader.h>
 #include <Light.h>
 #include <glm/glm.hpp>
 
@@ -39,8 +40,8 @@ int main(int argc, char* argv[]) {
     auto* diffuseLight = new Light();
     auto* specularLight = new Light();
 
-    ambientLight->color = glm::vec4(1.0, 1.0, 1.0, 0.2);
-    diffuseLight->color = glm::vec4(0.0, 0.0, 1.0, 1.0);
+    ambientLight->color = glm::vec4(1.0, 1.0, 1.0, 0.0);
+    diffuseLight->color = glm::vec4(1.0, 1.0, 1.0, 1.0);
     diffuseLight->position = glm::vec3(0.0, 1.0, 0.5);
     specularLight->color = glm::vec4(1.0, 1.0, 1.0, 1.0);
 
@@ -49,6 +50,11 @@ int main(int argc, char* argv[]) {
     ((LightningShader*) lightShader)->diffuse = diffuseLight;
     ((LightningShader*) lightShader)->specular = specularLight;
 
+    auto* normalMapping = (ShaderOpenGL*) coreSystem->getShaderSystem()->findShader("normalMapping");
+    ((NormalMappingShader*) normalMapping)->ambient = ambientLight;
+    ((NormalMappingShader*) normalMapping)->diffuse = diffuseLight;
+    ((NormalMappingShader*) normalMapping)->specular = specularLight;
+
 //    auto* cube = coreSystem->getResourcesSystem()->getRenderable("UltraSphere");
 //    auto* cube = coreSystem->getResourcesSystem()->getRenderable("IceCube");
 //    auto* cube = coreSystem->getResourcesSystem()->getRenderable("Pildora");
@@ -56,8 +62,9 @@ int main(int argc, char* argv[]) {
 //    auto* cube = coreSystem->getResourcesSystem()->getRenderable("Suzanne");
 //    auto* cube = coreSystem->getResourcesSystem()->getRenderable("BolaIluminada");
 //    auto* cube = coreSystem->getResourcesSystem()->getRenderable("UltraLisaIluminada");
-    auto* cube = coreSystem->getResourcesSystem()->getRenderable("CubeIluminado");
+//    auto* cube = coreSystem->getResourcesSystem()->getRenderable("CubeIluminado");
 //    auto* cube = coreSystem->getResourcesSystem()->getRenderable("IcosphereIluminada");
+    auto* cube = coreSystem->getResourcesSystem()->getRenderable("CubeNormal");
 
 //    cube->material = new Material("color", (ShaderOpenGL*) coreSystem->getShaderSystem()->findShader("color"));
     auto* cubeRenderable = new RenderableOpenGL(cube);

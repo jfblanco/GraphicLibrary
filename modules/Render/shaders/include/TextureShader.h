@@ -3,7 +3,7 @@
 
 #include <ShaderOpenGL.h>
 
-class TextureShader : public ShaderOpenGL{
+class TextureShader : public ShaderOpenGL {
 public:
     TextureShader() = default;
     ~TextureShader() = default;

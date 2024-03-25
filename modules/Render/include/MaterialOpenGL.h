@@ -3,18 +3,19 @@
 
 #include <string>
 #include <Material.h>
+#include <SDL2/SDL.h>
 #include "ShaderOpenGL.h"
 
 class Shader;
 class RenderableOpenGL;
 class MaterialOpenGL : public Material {
 public:
-    ShaderOpenGL *shaderOpenGL;
-    GLuint albedo;
-    GLuint metalic;
-    GLuint roughness;
-    GLuint normal;
-    GLuint ambientOcclusion;
+    ShaderOpenGL *shaderOpenGL = nullptr;
+    Uint16 albedo = SDL_MAX_UINT16;
+    Uint16 metalic = SDL_MAX_UINT16;
+    Uint16 roughness = SDL_MAX_UINT16;
+    Uint16 normal = SDL_MAX_UINT16;
+    Uint16 ambientOcclusion = SDL_MAX_UINT16;
 
     void prepareMaterial(RenderableOpenGL*);
     void setTextures();

@@ -25,5 +25,5 @@ void main() {
     vec4 finalAmbien = (ambientColorFragment * ambientColorFragment.w);
     vec4 finalDiffuse = (difuseColorFragment * difuseColorFragment.w) * max(dot(normalVert, lightDirection), 0.0);
     vec4 finalSpecular = (specularColorFragment.w * specularFactor * specularColorFragment);
-    finalColor = (finalAmbien + finalDiffuse + finalSpecular);
+    finalColor = (finalAmbien + finalDiffuse + finalSpecular) * objectColor;
 }
