@@ -7,11 +7,11 @@ class Texture;
 class Material {
 public:
     std::string name;
-    Texture *albedo;
-    Texture *metal;
-    Texture *roughness;
-    Texture *normal;
-    Texture *ambientOcclusion;
+    Texture *albedo = nullptr;
+    Texture *metal = nullptr;
+    Texture *roughness = nullptr;
+    Texture *normal = nullptr;
+    Texture *ambientOcclusion = nullptr;
 
     explicit Material(const char* _name) { this->name = _name; };
     ~Material() = default;

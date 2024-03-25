@@ -54,6 +54,7 @@ void RendererOpenGL::init() {
     }
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
     glDepthFunc(GL_LESS);
 
     this->logSystemInformation();

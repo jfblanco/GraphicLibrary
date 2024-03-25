@@ -15,7 +15,7 @@ void Renderable::setRotation(GLfloat roll, GLfloat pitch, GLfloat yaw) {
 
 void Renderable::updateModelMatrix() {
     auto a = glm::translate(glm::mat4x4(1.0), glm::vec3(this->position));
-    this->modelMatrix = glm::toMat4(this->rotation)
-                        * glm::translate(glm::mat4x4(1.0), glm::vec3(this->position))
+    this->modelMatrix = glm::translate(glm::mat4x4(1.0), glm::vec3(this->position))
+                        * glm::toMat4(this->rotation)
                         * glm::scale(glm::mat4x4(1.0), glm::vec3(this->scale));
 }

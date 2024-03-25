@@ -33,6 +33,7 @@ if(ENGINE_RENDERER_SHARED)
             shaders/src/ColorShader.cpp
             shaders/src/NormalShader.cpp
             shaders/src/TextureShader.cpp
+            shaders/src/LightningShader.cpp
             src/RendererOpenGL.cpp
     )
 else(ENGINE_RENDERER_SHARED)
@@ -47,11 +48,13 @@ else(ENGINE_RENDERER_SHARED)
                 shaders/src/ColorShader.cpp
                 shaders/src/NormalShader.cpp
                 shaders/src/TextureShader.cpp
+                shaders/src/LightningShader.cpp
             src/RendererOpenGL.cpp
     )
 endif(ENGINE_RENDERER_SHARED)
 
 target_include_directories(RenderLibrary PUBLIC include)
+target_include_directories(RenderLibrary PUBLIC shaders/include)
 target_include_directories(RenderLibrary PUBLIC ${RENDER_ENGINE_CORE_FOLDER}/interfaces)
 target_include_directories(RenderLibrary PUBLIC ${RENDER_ENGINE_CORE_FOLDER}/interfaces/includes)
 target_include_directories(RenderLibrary PUBLIC ${RENDER_ENGINE_CORE_FOLDER}/entities/include)
