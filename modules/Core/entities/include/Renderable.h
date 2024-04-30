@@ -19,6 +19,8 @@ public:
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normals;
     std::vector<glm::vec2> texture;
+    std::vector<glm::vec3> tangent;
+    std::vector<glm::vec3> bitangent;
     std::vector<glm::vec4> joints;
     std::vector<glm::vec4> weights;
     std::vector<GLuint> index;

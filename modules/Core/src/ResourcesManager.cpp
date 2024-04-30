@@ -43,9 +43,14 @@ struct NormalGLTF {
     Uint8 texture = SDL_MAX_UINT8;
 };
 
+struct HeightGLTF {
+    Uint8 texture = SDL_MAX_UINT8;
+};
+
 struct MaterialGLTF {
     std::string name;
     NormalGLTF normalGltf;
+    HeightGLTF heightGltf;
     MetallicRoughnessGLTF metallicRoughnessGltf;
 };
 
@@ -71,6 +76,8 @@ struct MeshGLTF {
     std::vector<glm::vec3> positions;
     std::vector<glm::vec3> normals;
     std::vector<glm::vec2> textureCoordinates;
+    std::vector<glm::vec4> textureTangent;
+    std::vector<glm::vec3> textureBitangent;
     std::vector<uint8_t> joints;
     std::vector<glm::vec4> weights;
     Uint8 material = SDL_MAX_UINT8;
@@ -286,6 +293,21 @@ void loadGLTFMeshTextureCoordinatesFromFile(MeshGLTF *meshGltf, Uint32 textCoord
     }
 }
 
+void loadGLTFMeshTangentFromFile(MeshGLTF *meshGltf, Uint32 textCoordIndex, Json::Value _accessors, Json::Value _buffersViews, std::ifstream *_jsonFile) {
+    Uint16 bufferView = _accessors[textCoordIndex]["bufferView"].asUInt();
+    Uint32 count = _accessors[textCoordIndex]["count"].as<Uint32>();
+    std::string type = _accessors[textCoordIndex]["type"].asString();
+
+    Uint32 indicesByteLength = _buffersViews[bufferView]["byteLength"].as<Uint32>();
+    Uint32 indicesByteOffset = _buffersViews[bufferView]["byteOffset"].as<Uint32>();
+
+    if(_jsonFile->is_open()) {
+        meshGltf->textureTangent.resize(count);
+        _jsonFile->seekg(indicesByteOffset);
+        _jsonFile->read(reinterpret_cast<char *>(meshGltf->textureTangent.data()), indicesByteLength);
+    }
+}
+
 void loadGLTFMeshJointsFromFile(MeshGLTF *meshGltf, Uint32 jointIndex, Json::Value _accessors, Json::Value _buffersViews, std::ifstream *_jsonFile) {
     Uint16 bufferView = _accessors[jointIndex]["bufferView"].asUInt();
     Uint32 count = _accessors[jointIndex]["count"].as<Uint32>();
@@ -358,11 +380,97 @@ void loadGLTFMeshFromFile(FileGLTF *_fileGltf, Json::Value _mesh, const Json::Va
         if(!primitive["attributes"]["TEXCOORD_0"].isNull()) {
             loadGLTFMeshTextureCoordinatesFromFile(&meshGltf, primitive["attributes"]["TEXCOORD_0"].as<Uint32>(), _accessors, _buffersViews, _jsonFile);
         }
+        if(!primitive["attributes"]["TANGENT"].isNull()) {
+            loadGLTFMeshTangentFromFile(&meshGltf, primitive["attributes"]["TANGENT"].as<Uint32>(), _accessors, _buffersViews, _jsonFile);
+        }
         if(!primitive["attributes"]["JOINTS_0"].isNull()) {
             loadGLTFMeshJointsFromFile(&meshGltf, primitive["attributes"]["JOINTS_0"].as<Uint32>(), _accessors, _buffersViews, _jsonFile);
         }
         if(!primitive["attributes"]["WEIGHTS_0"].isNull()) {
             loadGLTFMeshWeightsFromFile(&meshGltf, primitive["attributes"]["WEIGHTS_0"].as<Uint32>(), _accessors, _buffersViews, _jsonFile);
+        }
+    }
+    // Vertex Tangent and Bi-tangent
+//    if(meshGltf.normals.size() == meshGltf.textureTangent.size()) {
+//        meshGltf.textureBitangent.resize(meshGltf.normals.size());
+//        for(Uint32 i = 0; i < meshGltf.normals.size(); i++) {
+//            meshGltf.textureBitangent[i] = glm::cross(meshGltf.normals[i],
+//                                                      glm::vec3(meshGltf.textureTangent[i].x,
+//                                                                meshGltf.textureTangent[i].y,
+//                                                                meshGltf.textureTangent[i].z))
+//                                                                * meshGltf.textureTangent[i].w;
+//        }
+//    } else {
+//        meshGltf.textureBitangent.resize(meshGltf.normals.size());
+//        meshGltf.textureTangent.resize(meshGltf.normals.size());
+//        for(Uint32 i = 0; i < meshGltf.normals.size(); i++) {
+//            meshGltf.textureBitangent[i] = glm::vec3(0.05,0.06,0.05);
+//            meshGltf.textureTangent[i] = glm::vec4(0.05,0.06,0.05, 1.0);
+//        }
+//    }
+
+    // Vertex Tangent and Bi-tangent Calculation
+    if(meshGltf.positions.size() == meshGltf.textureCoordinates.size()) {
+        glm::vec3 vertex1;
+        glm::vec3 vertex2;
+        glm::vec3 vertex3;
+
+        glm::vec2 uv1;
+        glm::vec2 uv2;
+        glm::vec2 uv3;
+
+        glm::vec3 edge1;
+        glm::vec3 edge2;
+
+        GLfloat deltaU1;
+        GLfloat deltaV1;
+        GLfloat deltaU2;
+        GLfloat deltaV2;
+
+        GLfloat factor;
+        glm::vec3 tangent, bitangent = glm::vec3(0.0,0.0,0.0);
+
+        meshGltf.textureTangent.resize(meshGltf.positions.size());
+        meshGltf.textureBitangent.resize(meshGltf.positions.size());
+
+        for(Uint32 i = 0; i < meshGltf.indices.size(); i+=3) {
+            Uint32 index1 = meshGltf.indices[i];
+            Uint32 index2 = meshGltf.indices[i+1];
+            Uint32 index3 = meshGltf.indices[i+2];
+
+            vertex1 = meshGltf.positions[index1];
+            vertex2 = meshGltf.positions[index2];
+            vertex3 = meshGltf.positions[index3];
+
+            uv1 = meshGltf.textureCoordinates[index1];
+            uv2 = meshGltf.textureCoordinates[index2];
+            uv3 = meshGltf.textureCoordinates[index3];
+
+            edge1 = vertex2 - vertex1;
+            edge2 = vertex3 - vertex1;
+
+            deltaU1 = uv2.x - uv1.x;
+            deltaV1 = uv2.y - uv1.y;
+            deltaU2 = uv3.x - uv1.x;
+            deltaV2 = uv3.y - uv1.y;
+
+            factor = 1.0f / (deltaU1 * deltaV2 - deltaU2 * deltaV1);
+
+            tangent.x = factor * (deltaV2 * edge1.x - deltaV1 * edge2.x);
+            tangent.y = factor * (deltaV2 * edge1.y - deltaV1 * edge2.y);
+            tangent.z = factor * (deltaV2 * edge1.z - deltaV1 * edge2.z);
+
+            bitangent.x = factor * (-deltaU2 * edge1.x + deltaU1 * edge2.x);
+            bitangent.y = factor * (-deltaU2 * edge1.y + deltaU1 * edge2.y);
+            bitangent.z = factor * (-deltaU2 * edge1.z + deltaU1 * edge2.z);
+
+            meshGltf.textureTangent[index1] = glm::normalize(glm::vec4(tangent, 1.0));
+            meshGltf.textureTangent[index2] = glm::normalize(glm::vec4(tangent, 1.0));
+            meshGltf.textureTangent[index3] = glm::normalize(glm::vec4(tangent, 1.0));
+
+            meshGltf.textureBitangent[index1] = glm::normalize(glm::vec4(bitangent, 1.0));
+            meshGltf.textureBitangent[index2] = glm::normalize(glm::vec4(bitangent, 1.0));
+            meshGltf.textureBitangent[index3] = glm::normalize(glm::vec4(bitangent, 1.0));
         }
     }
     _fileGltf->meshes.push_back(meshGltf);
@@ -386,6 +494,14 @@ Material* createMaterial(MaterialGLTF materialGltf, FileGLTF *_fileGltf, Resourc
         texture->source = resourcesManager->pathToImagesResources + imageGltf.source;
         material->normal = texture;
     }
+    if(materialGltf.heightGltf.texture != SDL_MAX_UINT8) {
+        TextureGLTF textureGLTF = _fileGltf->textures[materialGltf.heightGltf.texture];
+        ImageGLTF imageGltf = _fileGltf->images[textureGLTF.source];
+        auto* texture = new Texture();
+        texture->name = imageGltf.name;
+        texture->source = resourcesManager->pathToImagesResources + imageGltf.source;
+        material->height = texture;
+    }
     return material;
 }
 
@@ -400,6 +516,8 @@ Renderable* createModelFromNode(NodeGLTF *nodeGltf, MeshGLTF *meshGltf, FileGLTF
     model->vertices.insert(model->vertices.end(), meshGltf->positions.begin(), meshGltf->positions.end());
     model->index.insert(model->index.end(), meshGltf->indices.begin(), meshGltf->indices.end());
     model->normals.insert(model->normals.end(), meshGltf->normals.begin(), meshGltf->normals.end());
+    model->tangent.insert(model->tangent.end(), meshGltf->textureTangent.begin(), meshGltf->textureTangent.end());
+    model->bitangent.insert(model->bitangent.end(), meshGltf->textureBitangent.begin(), meshGltf->textureBitangent.end());
     model->texture.insert(model->texture.end(), meshGltf->textureCoordinates.begin(), meshGltf->textureCoordinates.end());
     model->weights.insert(model->weights.end(), meshGltf->weights.begin(), meshGltf->weights.end());
     if(meshGltf->material != SDL_MAX_UINT8) {
@@ -703,6 +821,9 @@ void loadGLTFMaterialsFromFile(FileGLTF *_fileGltf, Json::Value _material) {
     }
     if(!_material["normalTexture"]["index"].isNull()) {
         material.normalGltf.texture = _material["normalTexture"]["index"].as<Uint32>();
+    }
+    if(!_material["heightTexture"]["index"].isNull()) {
+        material.heightGltf.texture = _material["heightTexture"]["index"].as<Uint32>();
     }
     _fileGltf->materials.push_back(material);
 }

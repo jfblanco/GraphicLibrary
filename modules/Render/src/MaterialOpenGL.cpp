@@ -29,6 +29,10 @@ void MaterialOpenGL::prepareMaterial(RenderableOpenGL *renderableOpenGl) {
         SDL_Surface *normalSurface = IMG_Load(renderableOpenGl->renderable->material->normal->source.c_str());
         createOpenGLTextureUniform(&(this->normal) ,normalSurface);
     }
+    if(renderableOpenGl->renderable->material->height != nullptr) {
+        SDL_Surface *heightSurface = IMG_Load(renderableOpenGl->renderable->material->height->source.c_str());
+        createOpenGLTextureUniform(&(this->height) ,heightSurface);
+    }
 }
 void MaterialOpenGL::setTextures() {
     if(this->albedo != SDL_MAX_UINT16) {
@@ -38,5 +42,9 @@ void MaterialOpenGL::setTextures() {
     if(this->normal != SDL_MAX_UINT16) {
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, this->normal);
+    }
+    if(this->height != SDL_MAX_UINT16) {
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, this->height);
     }
 }

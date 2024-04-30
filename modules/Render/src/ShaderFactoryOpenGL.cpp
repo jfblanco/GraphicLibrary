@@ -12,6 +12,7 @@
 #include "../shaders/include/TextureShader.h"
 #include "../shaders/include/LightningShader.h"
 #include "../shaders/include/NormalMappingShader.h"
+#include "../shaders/include/ParallaxMappingShader.h"
 
 void checkCompilingStatusLog(GLuint shaderId, GLenum flag) {
     GLint compileStatus = GL_TRUE;
@@ -119,18 +120,21 @@ void ShaderFactoryOpenGL::init(Configuration *configuration, ShaderManager *shad
     auto* textureShader = new TextureShader();
     auto* lightningShader = new LightningShader();
     auto* normalMappingShader = new NormalMappingShader();
+    auto* parallaxMapping = new ParallaxMappingShader();
 
     createShader(colorShader, "color", (path + "/simple.vert").c_str(), (path + "/simple.frag").c_str());
     createShader(normalShader, "normals", (path + "/normal.vert").c_str(), (path + "/normal.frag").c_str());
     createShader(textureShader, "texture", (path + "/texture.vert").c_str(), (path + "/texture.frag").c_str());
     createShader(lightningShader, "lightning", (path + "/lightning.vert").c_str(), (path + "/lightning.frag").c_str());
     createShader(normalMappingShader, "normalMapping", (path + "/normalMapping.vert").c_str(), (path + "/normalMapping.frag").c_str());
+    createShader(parallaxMapping, "parallaxMapping", (path + "/parallaxMapping.vert").c_str(), (path + "/parallaxMapping.frag").c_str());
 
     shaderManager->addShader(colorShader);
     shaderManager->addShader(normalShader);
     shaderManager->addShader(textureShader);
     shaderManager->addShader(lightningShader);
     shaderManager->addShader(normalMappingShader);
+    shaderManager->addShader(parallaxMapping);
 
     glUseProgram(0);
     SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "[ShaderFactoryOpenGL] [    Simple Shader Loaded]");

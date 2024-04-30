@@ -11,6 +11,7 @@ public:
     Texture *metal = nullptr;
     Texture *roughness = nullptr;
     Texture *normal = nullptr;
+    Texture *height = nullptr;
     Texture *ambientOcclusion = nullptr;
 
     explicit Material(const char* _name) { this->name = _name; };

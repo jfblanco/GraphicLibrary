@@ -11,11 +11,11 @@ void CloseEvent::quitTimeEvent(SDL_Event event) {
 }
 
 void CloseEvent::mouseMove(SDL_Event event) {
-    if(isLeftMouseClicked && (cubeElement != nullptr)) {
+    if(isLeftMouseClicked && (cubeElements[selected] != nullptr)) {
         if(event.type == SDL_MOUSEMOTION) {
-            cubeElement->setRotation(cubeElement->eulerAngles.x + (0.01 * event.motion.yrel),
-                                     cubeElement->eulerAngles.y + (0.01 * event.motion.xrel),
-                                     cubeElement->eulerAngles.z);
+            cubeElements[selected]->setRotation(cubeElements[selected]->eulerAngles.x + (0.01 * event.motion.yrel),
+                                                cubeElements[selected]->eulerAngles.y + (0.01 * event.motion.xrel),
+                                                cubeElements[selected]->eulerAngles.z);
         }
     }
 }
@@ -34,22 +34,44 @@ void CloseEvent::mouseButtonReleased(SDL_Event event) {
 
 void CloseEvent::keyDownTimeEvent(SDL_Event event) {
     if(event.key.keysym.sym == SDLK_z) {
-        cubeElement->setPosition(cubeElement->position.x,cubeElement->position.y,cubeElement->position.z + 0.5);
+        cubeElements[selected]->setPosition(cubeElements[selected]->position.x,cubeElements[selected]->position.y,cubeElements[selected]->position.z + 0.5);
     }
     if(event.key.keysym.sym == SDLK_x) {
-        cubeElement->setPosition(cubeElement->position.x,cubeElement->position.y,cubeElement->position.z - 0.5);
+        cubeElements[selected]->setPosition(cubeElements[selected]->position.x,cubeElements[selected]->position.y,cubeElements[selected]->position.z - 0.5);
     }
     if(event.key.keysym.sym == SDLK_d) {
-        cubeElement->setPosition(cubeElement->position.x + 0.05,cubeElement->position.y,cubeElement->position.z);
+        cubeElements[selected]->setPosition(cubeElements[selected]->position.x + 0.05,cubeElements[selected]->position.y,cubeElements[selected]->position.z);
     }
     if(event.key.keysym.sym == SDLK_a) {
-        cubeElement->setPosition(cubeElement->position.x - 0.05,cubeElement->position.y,cubeElement->position.z);
+        cubeElements[selected]->setPosition(cubeElements[selected]->position.x - 0.05,cubeElements[selected]->position.y,cubeElements[selected]->position.z);
     }
     if(event.key.keysym.sym == SDLK_w) {
-        cubeElement->setPosition(cubeElement->position.x,cubeElement->position.y + 0.05,cubeElement->position.z);
+        cubeElements[selected]->setPosition(cubeElements[selected]->position.x,cubeElements[selected]->position.y + 0.05,cubeElements[selected]->position.z);
     }
     if(event.key.keysym.sym == SDLK_s) {
-        cubeElement->setPosition(cubeElement->position.x,cubeElement->position.y - 0.05,cubeElement->position.z);
+        cubeElements[selected]->setPosition(cubeElements[selected]->position.x,cubeElements[selected]->position.y - 0.05,cubeElements[selected]->position.z);
+    }
+    if(event.key.keysym.sym == SDLK_RIGHT) {
+        selected -= 1;
+        if(selected < 0) {
+            selected = cubeElements.size() - 1;
+        }
+    }
+    if(event.key.keysym.sym == SDLK_LEFT) {
+        selected += 1;
+        if(selected >= cubeElements.size()) {
+            selected = 0;
+        }
+    }
+    if(event.key.keysym.sym == SDLK_UP) {
+        if(this->shader != nullptr) {
+            this->shader->heightScale -= 0.01;
+        }
+    }
+    if(event.key.keysym.sym == SDLK_DOWN) {
+        if(this->shader != nullptr) {
+            this->shader->heightScale += 0.01;
+        }
     }
 //    this->camera->viewMatrix = glm::lookAt(this->camera->position,this->camera->point,this->camera->orientation);
 }

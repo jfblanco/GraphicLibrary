@@ -86,6 +86,16 @@ void RendererOpenGL::render() {
                               3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), BUFFER_OFFSET(0));
         glEnableVertexAttribArray(renderable->materialOpenGL->shaderOpenGL->normalAttribute);
 
+        glBindBuffer(GL_ARRAY_BUFFER, renderable->tangentVBO);
+        glVertexAttribPointer(renderable->materialOpenGL->shaderOpenGL->tangentAttribute,
+                              3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), BUFFER_OFFSET(0));
+        glEnableVertexAttribArray(renderable->materialOpenGL->shaderOpenGL->tangentAttribute);
+
+        glBindBuffer(GL_ARRAY_BUFFER, renderable->bitangentVBO);
+        glVertexAttribPointer(renderable->materialOpenGL->shaderOpenGL->bitangentAttribute,
+                              3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), BUFFER_OFFSET(0));
+        glEnableVertexAttribArray(renderable->materialOpenGL->shaderOpenGL->bitangentAttribute);
+
         glBindBuffer(GL_ARRAY_BUFFER, renderable->textureVBO);
         glVertexAttribPointer(renderable->materialOpenGL->shaderOpenGL->uvCoordAttribute,
                               2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), BUFFER_OFFSET(0));

@@ -10,9 +10,10 @@ void ShaderOpenGL::findUniformVariables() {
 
     albedoUniform = glGetUniformLocation(this->shaderProgram, "albedoUniform");
     normalUniform = glGetUniformLocation(this->shaderProgram, "normalUniform");
+    heightUniform = glGetUniformLocation(this->shaderProgram, "heightUniform");
     ambientOcclusionUniform = glGetUniformLocation(this->shaderProgram, "ambientOcclusionUniform");
-    roughtnessOcclusion = glGetUniformLocation(this->shaderProgram, "roughtnessOcclusion");
-    metalic = glGetUniformLocation(this->shaderProgram, "metalic");
+    roughtnessOcclusionUniform = glGetUniformLocation(this->shaderProgram, "roughtnessOcclusionUniform");
+    metallicUniform = glGetUniformLocation(this->shaderProgram, "metallicUniform");
 }
 
 void ShaderOpenGL::useUniformVariables(RenderingSystem* _renderSystem, Renderable* _renderable) {
@@ -25,4 +26,6 @@ void ShaderOpenGL::findVertexAttributeVariables() {
     vertexAttribute = glGetAttribLocation(this->shaderProgram, "vertexPosition");
     normalAttribute = glGetAttribLocation(this->shaderProgram, "vertexNormal");
     uvCoordAttribute = glGetAttribLocation(this->shaderProgram, "vertexUVCoord");
+    tangentAttribute = glGetAttribLocation(this->shaderProgram, "vertexTangent");
+    bitangentAttribute = glGetAttribLocation(this->shaderProgram, "vertexBitangent");
 }

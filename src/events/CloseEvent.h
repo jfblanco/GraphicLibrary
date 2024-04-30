@@ -2,6 +2,8 @@
 #define ENGINETEST_CLOSEEVENT_H
 
 #include <EventListener.h>
+#include <ParallaxMappingShader.h>
+#include <vector>
 
 class Camera;
 class Renderable;
@@ -13,7 +15,9 @@ public:
     ~CloseEvent()=default;
 
     Camera* camera;
-    Renderable* cubeElement;
+    ParallaxMappingShader* shader = nullptr;
+    Sint8 selected = 0;
+    std::vector<Renderable*> cubeElements;
     SDL_bool isLeftMouseClicked = SDL_FALSE;
 
     SDL_bool getExitLoop() { return this->exitLoop; };
