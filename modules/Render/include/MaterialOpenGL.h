@@ -15,6 +15,7 @@ public:
     Uint16 metalic = SDL_MAX_UINT16;
     Uint16 roughness = SDL_MAX_UINT16;
     Uint16 normal = SDL_MAX_UINT16;
+    Uint16 height = SDL_MAX_UINT16;
     Uint16 ambientOcclusion = SDL_MAX_UINT16;
 
     void prepareMaterial(RenderableOpenGL*);

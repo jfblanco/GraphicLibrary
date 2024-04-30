@@ -35,6 +35,7 @@ if(ENGINE_RENDERER_SHARED)
             shaders/src/TextureShader.cpp
             shaders/src/LightningShader.cpp
             shaders/src/NormalMappingShader.cpp
+            shaders/src/ParallaxMappingShader.cpp
             src/RendererOpenGL.cpp
     )
 else(ENGINE_RENDERER_SHARED)
@@ -51,6 +52,7 @@ else(ENGINE_RENDERER_SHARED)
                 shaders/src/TextureShader.cpp
                 shaders/src/LightningShader.cpp
                 shaders/src/NormalMappingShader.cpp
+                shaders/src/ParallaxMappingShader.cpp
             src/RendererOpenGL.cpp
     )
 endif(ENGINE_RENDERER_SHARED)

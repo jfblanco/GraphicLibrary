@@ -17,11 +17,15 @@ public:
     Sint16 vertexAttribute;
     Sint16 normalAttribute;
     Sint16 uvCoordAttribute;
+    Sint16 tangentAttribute;
+    Sint16 bitangentAttribute;
+
     Sint16 albedoUniform;
     Sint16 normalUniform;
+    Sint16 heightUniform;
     Sint16 ambientOcclusionUniform;
-    Sint16 roughtnessOcclusion;
-    Sint16 metalic;
+    Sint16 roughtnessOcclusionUniform;
+    Sint16 metallicUniform;
 
     ShaderOpenGL() = default;
     ~ShaderOpenGL() = default;
