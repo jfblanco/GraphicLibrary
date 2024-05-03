@@ -1,11 +1,11 @@
 #ifndef ENGINETEST_NORMALSHADER_H
 #define ENGINETEST_NORMALSHADER_H
 
-#include <ShaderOpenGL.h>
-#include "RenderableOpenGL.h"
+#include <Shader.h>
+#include "Renderable.h"
 #include <SDL2/SDL.h>
 
-class NormalShader : public ShaderOpenGL {
+class NormalShader : public Shader {
 public:
     NormalShader() = default;
     ~NormalShader() = default;

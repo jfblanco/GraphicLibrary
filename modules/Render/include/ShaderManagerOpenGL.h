@@ -2,12 +2,12 @@
 #define ENGINETEST_SHADERMANAGEROPENGL_H
 
 #include <ShaderManager.h>
-#include "ShaderOpenGL.h"
+#include "Shader.h"
 #include <map>
 
 class ShaderManagerOpenGL : public ShaderManager {
 public:
-    std::map<std::string, ShaderOpenGL*> shaders;
+    std::map<std::string, Shader*> shaders;
 
     Shader* findShader(const std::string&) override;
     void addShader(Shader* shader) override;

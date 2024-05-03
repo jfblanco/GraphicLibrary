@@ -2,14 +2,15 @@
 #include "../entities/include/Configuration.h"
 #include "../external/jsoncpp/include/json/json.h"
 
-#include "../entities/include/Renderable.h"
-#include "../entities/include/Material.h"
 #include "../entities/include/Texture.h"
 #include "../entities/include/Skin.h"
 #include "../entities/include/Joint.h"
 #include "../entities/include/Sampler.h"
 #include "../entities/include/Animation.h"
 #include "../entities/include/AnimatedBone.h"
+
+#include "../../Render/include/Renderable.h"
+#include "../../Render/include/Material.h"
 
 #include <glm/detail/type_quat.hpp>
 #include <glm/glm.hpp>
@@ -22,6 +23,8 @@
 #include <filesystem>
 #include <iostream>
 #include <fstream>
+
+#include <GL/glew.h>
 
 struct ChannelGLTF {
     Uint16 node;
@@ -477,7 +480,7 @@ void loadGLTFMeshFromFile(FileGLTF *_fileGltf, Json::Value _mesh, const Json::Va
 }
 
 Material* createMaterial(MaterialGLTF materialGltf, FileGLTF *_fileGltf, ResourcesManager *resourcesManager) {
-    auto* material = new Material(materialGltf.name.c_str());
+    auto* material = new Material(materialGltf.name.c_str(), nullptr);
     if(materialGltf.metallicRoughnessGltf.baseColorTexture != SDL_MAX_UINT8) {
         TextureGLTF textureGLTF = _fileGltf->textures[materialGltf.metallicRoughnessGltf.baseColorTexture];
         ImageGLTF imageGltf = _fileGltf->images[textureGLTF.source];

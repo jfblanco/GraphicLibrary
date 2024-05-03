@@ -3,7 +3,7 @@
 
 #include <string>
 #include <map>
-#include "../entities/include/MockShader.h"
+#include "../../Render/include/MockShader.h"
 
 class ShaderManager {
 public:

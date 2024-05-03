@@ -1,28 +1,28 @@
-#include "../include/ShaderOpenGL.h"
+#include "../include/Shader.h"
 #include "../include/RendererOpenGL.h"
 #include <GL/glew.h>
 #include <glm/gtc/type_ptr.hpp>
 
-void ShaderOpenGL::findUniformVariables() {
+void Shader::findUniformVariables() {
     projectionModelViewUniform = glGetUniformLocation(this->shaderProgram, "projectionMatrix");
     modelMatrixUniform = glGetUniformLocation(this->shaderProgram, "modelMatrix");
     viewMatrixUniform = glGetUniformLocation(this->shaderProgram, "viewMatrix");
 
-    albedoUniform = glGetUniformLocation(this->shaderProgram, "albedoUniform");
-    normalUniform = glGetUniformLocation(this->shaderProgram, "normalUniform");
-    heightUniform = glGetUniformLocation(this->shaderProgram, "heightUniform");
-    ambientOcclusionUniform = glGetUniformLocation(this->shaderProgram, "ambientOcclusionUniform");
-    roughtnessOcclusionUniform = glGetUniformLocation(this->shaderProgram, "roughtnessOcclusionUniform");
-    metallicUniform = glGetUniformLocation(this->shaderProgram, "metallicUniform");
+    albedoUBO = glGetUniformLocation(this->shaderProgram, "albedoUniform");
+    normalUBO = glGetUniformLocation(this->shaderProgram, "normalUniform");
+    heightUBO = glGetUniformLocation(this->shaderProgram, "heightUniform");
+    ambientOcclusionUBO = glGetUniformLocation(this->shaderProgram, "ambientOcclusionUniform");
+    roughtnessOcclusionUBO = glGetUniformLocation(this->shaderProgram, "roughtnessOcclusionUniform");
+    metallicUBO = glGetUniformLocation(this->shaderProgram, "metallicUniform");
 }
 
-void ShaderOpenGL::useUniformVariables(RenderingSystem* _renderSystem, Renderable* _renderable) {
+void Shader::useUniformVariables(RenderingSystem* _renderSystem, Renderable* _renderable) {
     glUniformMatrix4fv(this->projectionModelViewUniform, 1, GL_FALSE, glm::value_ptr(((RendererOpenGL*)_renderSystem)->projection));
     glUniformMatrix4fv(this->viewMatrixUniform, 1, GL_FALSE, glm::value_ptr(((RendererOpenGL*)_renderSystem)->camera->viewMatrix));
     glUniformMatrix4fv(this->modelMatrixUniform, 1, GL_FALSE, glm::value_ptr(_renderable->modelMatrix));
 }
 
-void ShaderOpenGL::findVertexAttributeVariables() {
+void Shader::findVertexAttributeVariables() {
     vertexAttribute = glGetAttribLocation(this->shaderProgram, "vertexPosition");
     normalAttribute = glGetAttribLocation(this->shaderProgram, "vertexNormal");
     uvCoordAttribute = glGetAttribLocation(this->shaderProgram, "vertexUVCoord");

@@ -1,11 +1,11 @@
 #ifndef ENGINETEST_COLORSHADER_H
 #define ENGINETEST_COLORSHADER_H
 
-#include <ShaderOpenGL.h>
-#include "RenderableOpenGL.h"
+#include <Shader.h>
+#include "Renderable.h"
 #include <SDL2/SDL.h>
 
-class ColorShader : public ShaderOpenGL {
+class ColorShader : public Shader {
 public:
     ColorShader() = default;
     ~ColorShader() = default;

@@ -6,7 +6,7 @@
 #include <RenderingSystem.h>
 #include <Camera.h>
 #include <vector>
-#include "RenderableOpenGL.h"
+#include "Renderable.h"
 #include "RenderableFactoryOpenGL.h"
 
 class RendererOpenGL : public RenderingSystem {
@@ -18,11 +18,12 @@ public:
     Camera* camera = new Camera();
     glm::mat4x4 projection;
     SDL_GLContext gl_context = nullptr;
-    std::vector<RenderableOpenGL*> renderables;
+    std::vector<Renderable*> renderables;
+    std::vector<Renderable*> guiRenderables;
     RenderableFactoryOpenGL *renderableFactoryOpenGl = new RenderableFactoryOpenGL();
 
-    RendererOpenGL()=default;
-    ~RendererOpenGL()=default;
+    RendererOpenGL() = default;
+    ~RendererOpenGL() = default;
 
     void init() override;
     void destroy() override;

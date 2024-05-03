@@ -1,10 +1,10 @@
 #ifndef ENGINETEST_PARALLAXMAPPINGSHADER_H
 #define ENGINETEST_PARALLAXMAPPINGSHADER_H
 
-#include <ShaderOpenGL.h>
+#include <Shader.h>
 
 class Light;
-class ParallaxMappingShader : public ShaderOpenGL {
+class ParallaxMappingShader : public Shader {
 public:
     Light* ambient = nullptr;
     Light* diffuse = nullptr;

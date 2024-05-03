@@ -1,28 +1,32 @@
-#include "../include/NormalMappingShader.h"
+#include "../include/ParallaxMappingShader.h"
 #include <Light.h>
-#include <ShaderOpenGL.h>
+#include <Shader.h>
 #include <RendererOpenGL.h>
 
-NormalMappingShader::NormalMappingShader() = default;
+ParallaxMappingShader::ParallaxMappingShader() = default;
 
-NormalMappingShader::~NormalMappingShader() = default;
+ParallaxMappingShader::~ParallaxMappingShader() = default;
 
-void NormalMappingShader::findUniformVariables() {
-    ShaderOpenGL::findUniformVariables();
+void ParallaxMappingShader::findUniformVariables() {
+    Shader::findUniformVariables();
     ambientColor = glGetUniformLocation(this->shaderProgram, "ambientColor");
     diffuseColor = glGetUniformLocation(this->shaderProgram, "difuseColor");
     specularColor = glGetUniformLocation(this->shaderProgram, "specularColor");
     lightPosition = glGetUniformLocation(this->shaderProgram, "lightPosition");
     viewPosition = glGetUniformLocation(this->shaderProgram, "viewPosition");
+    viewPosition = glGetUniformLocation(this->shaderProgram, "viewPosition");
+    heightScaleUniform = glGetUniformLocation(this->shaderProgram, "heightScale");
 }
 
-void NormalMappingShader::useUniformVariables(RenderingSystem* _renderingSystem, Renderable* _renderable) {
-    ShaderOpenGL::useUniformVariables(_renderingSystem, _renderable);
+void ParallaxMappingShader::useUniformVariables(RenderingSystem* _renderingSystem, Renderable* _renderable) {
+    Shader::useUniformVariables(_renderingSystem, _renderable);
     glUniform4fv(this->ambientColor, 1, &(this->ambient->color[0]));
     glUniform4fv(this->diffuseColor, 1, &(this->diffuse->color[0]));
     glUniform4fv(this->specularColor, 1, &(this->specular->color[0]));
     glUniform3fv(this->lightPosition, 1, &(this->diffuse->position[0]));
     glUniform3fv(this->viewPosition, 1, &(((RendererOpenGL*)_renderingSystem)->camera->position)[0]);
-    glUniform1i(this->albedoUniform, 0);
-    glUniform1i(this->normalUniform, 1);
+    glUniform1f(this->heightScaleUniform, this->heightScale);
+    glUniform1i(this->albedoUBO, 0);
+    glUniform1i(this->normalUBO, 1);
+    glUniform1i(this->heightUBO, 2);
 }

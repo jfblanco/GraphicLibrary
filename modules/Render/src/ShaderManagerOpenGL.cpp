@@ -1,5 +1,5 @@
 #include "../include/ShaderManagerOpenGL.h"
-#include "ShaderOpenGL.h"
+#include "Shader.h"
 #include <map>
 #include <string>
 
@@ -12,5 +12,5 @@ Shader* ShaderManagerOpenGL::findShader(const std::string& key) {
 }
 
 void ShaderManagerOpenGL::addShader(Shader* shader) {
-    this->shaders.insert(std::pair<std::string, ShaderOpenGL*>(shader->name, (ShaderOpenGL*) shader));
+    this->shaders.insert(std::pair<std::string, Shader*>(shader->name, shader));
 };

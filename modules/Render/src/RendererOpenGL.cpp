@@ -1,11 +1,9 @@
 #include "../include/RendererOpenGL.h"
-#include "../shaders/include/ColorShader.h"
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <Material.h>
-#include <MaterialOpenGL.h>
 #include <Shader.h>
 #include <vector>
 
@@ -70,39 +68,39 @@ void RendererOpenGL::destroy() {
 
 void RendererOpenGL::render() {
     for(auto* renderable : renderables) {
-        glUseProgram(renderable->materialOpenGL->shaderOpenGL->shaderProgram);
-        renderable->materialOpenGL->shaderOpenGL->useUniformVariables(this, renderable->renderable);
+        glUseProgram(renderable->material->shader->shaderProgram);
+        renderable->material->shader->useUniformVariables(this, renderable);
 
-        renderable->materialOpenGL->setTextures();
+        renderable->material->setTextures();
         glBindVertexArray(renderable->vao);
 
         glBindBuffer(GL_ARRAY_BUFFER, renderable->vertexVBO);
-        glVertexAttribPointer(renderable->materialOpenGL->shaderOpenGL->vertexAttribute,
+        glVertexAttribPointer(renderable->material->shader->vertexAttribute,
                               3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), BUFFER_OFFSET(0));
-        glEnableVertexAttribArray(renderable->materialOpenGL->shaderOpenGL->vertexAttribute);
+        glEnableVertexAttribArray(renderable->material->shader->vertexAttribute);
 
         glBindBuffer(GL_ARRAY_BUFFER, renderable->normalVBO);
-        glVertexAttribPointer(renderable->materialOpenGL->shaderOpenGL->normalAttribute,
+        glVertexAttribPointer(renderable->material->shader->normalAttribute,
                               3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), BUFFER_OFFSET(0));
-        glEnableVertexAttribArray(renderable->materialOpenGL->shaderOpenGL->normalAttribute);
+        glEnableVertexAttribArray(renderable->material->shader->normalAttribute);
 
         glBindBuffer(GL_ARRAY_BUFFER, renderable->tangentVBO);
-        glVertexAttribPointer(renderable->materialOpenGL->shaderOpenGL->tangentAttribute,
+        glVertexAttribPointer(renderable->material->shader->tangentAttribute,
                               3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), BUFFER_OFFSET(0));
-        glEnableVertexAttribArray(renderable->materialOpenGL->shaderOpenGL->tangentAttribute);
+        glEnableVertexAttribArray(renderable->material->shader->tangentAttribute);
 
         glBindBuffer(GL_ARRAY_BUFFER, renderable->bitangentVBO);
-        glVertexAttribPointer(renderable->materialOpenGL->shaderOpenGL->bitangentAttribute,
+        glVertexAttribPointer(renderable->material->shader->bitangentAttribute,
                               3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), BUFFER_OFFSET(0));
-        glEnableVertexAttribArray(renderable->materialOpenGL->shaderOpenGL->bitangentAttribute);
+        glEnableVertexAttribArray(renderable->material->shader->bitangentAttribute);
 
         glBindBuffer(GL_ARRAY_BUFFER, renderable->textureVBO);
-        glVertexAttribPointer(renderable->materialOpenGL->shaderOpenGL->uvCoordAttribute,
+        glVertexAttribPointer(renderable->material->shader->uvCoordAttribute,
                               2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), BUFFER_OFFSET(0));
-        glEnableVertexAttribArray(renderable->materialOpenGL->shaderOpenGL->uvCoordAttribute);
+        glEnableVertexAttribArray(renderable->material->shader->uvCoordAttribute);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderable->indexVBO);
-        glDrawElements(GL_TRIANGLES, renderable->renderable->index.size(), GL_UNSIGNED_INT, NULL);
+        glDrawElements(GL_TRIANGLES, renderable->index.size(), GL_UNSIGNED_INT, NULL);
     }
     SDL_GL_SwapWindow(this->window);
 }

@@ -1,6 +1,15 @@
 #include "../include/Renderable.h"
+#include "../include/Shader.h"
+#include "../include/Material.h"
+
+#include <ShaderManager.h>
 #include <glm/detail/type_quat.hpp>
 #include <glm/gtx/quaternion.hpp>
+
+void Renderable::prepareMaterial(ShaderManager *_shaderManager) {
+    this->material->shader = _shaderManager->findShader(this->material->name);
+    material->prepareMaterial(this);
+}
 
 void Renderable::setPosition(GLfloat x, GLfloat y, GLfloat z) {
     this->position = glm::vec4(x, y, z, 1.0);

@@ -1,10 +1,8 @@
 #include <SDL2/SDL.h>
-#include <SDL2_image/include/SDL2/SDL_image.h>
-
 #include "../modules/Core/Core.hpp"
 #include "../modules/Render/include/ShaderFactoryOpenGL.h"
 #include "events/CloseEvent.h"
-#include <MaterialOpenGL.h>
+#include <Material.h>
 #include <EventManager.h>
 #include <RendererOpenGL.h>
 #include <ShaderManagerOpenGL.h>
@@ -12,7 +10,9 @@
 #include <NormalMappingShader.h>
 #include <ParallaxMappingShader.h>
 #include <Light.h>
-#include <glm/glm.hpp>
+#include <GUIFactory.h>
+#include <GUIManager.h>
+#include <GUIEditorWindows.h>
 
 #define BUFFER_OFFSET(a) ((void*)(a))
 
@@ -25,6 +25,9 @@ int main(int argc, char* argv[]) {
     auto* coreSystem = new CoreSystem();
     auto* shaderFactory = new ShaderFactoryOpenGL();
     auto* shaderManager = new ShaderManagerOpenGL();
+    auto* guiManager = new GUIManager();
+    auto* guiFactory = new GUIFactory();
+    auto* guiEditorWindows = new GUIEditorWindows();
 
     coreSystem->setRenderSystem(renderManager);
     coreSystem->setInputSystem(eventManager);
@@ -41,9 +44,9 @@ int main(int argc, char* argv[]) {
     auto* diffuseLight = new Light();
     auto* specularLight = new Light();
 
-    ambientLight->color = glm::vec4(1.0, 1.0, 1.0, 0.0);
-    diffuseLight->color = glm::vec4(1.0, 1.0, 1.0, 1.0);
-    diffuseLight->position = glm::vec3(0.0, 0.0, 5.0);
+    ambientLight->color = glm::vec4(0.0, 0.0, 0.0, 0.0);
+    diffuseLight->color = glm::vec4(0.8, 0.8, 0.8, 1.0);
+    diffuseLight->position = glm::vec3(0.0, 1.0, 6.0);
     specularLight->color = glm::vec4(1.0, 1.0, 1.0, 1.0);
 
     auto* ambientLight2 = new Light();
@@ -53,19 +56,19 @@ int main(int argc, char* argv[]) {
     ambientLight2->color = glm::vec4(0.24725, 0.1995, 0.0745, 1.0);
     diffuseLight2->color = glm::vec4(0.75164, 0.60648, 0.22648, 1.0);
     diffuseLight2->position = glm::vec3(0.0, 1.0, 0.5);
-    specularLight2->color = glm::vec4(0.628281, 0.555802, 0.366065, 1.0);
+    specularLight2->color = glm::vec4(1.0, 1.0, 1.0, 1.0);
 
-    auto* lightShader = (ShaderOpenGL*) coreSystem->getShaderSystem()->findShader("lightning");
+    auto* lightShader = coreSystem->getShaderSystem()->findShader("lightning");
     ((LightningShader*) lightShader)->ambient = ambientLight2;
     ((LightningShader*) lightShader)->diffuse = diffuseLight2;
     ((LightningShader*) lightShader)->specular = specularLight2;
 
-    auto* normalMapping = (ShaderOpenGL*) coreSystem->getShaderSystem()->findShader("normalMapping");
+    auto* normalMapping = coreSystem->getShaderSystem()->findShader("normalMapping");
     ((NormalMappingShader*) normalMapping)->ambient = ambientLight;
     ((NormalMappingShader*) normalMapping)->diffuse = diffuseLight;
     ((NormalMappingShader*) normalMapping)->specular = specularLight;
 
-    auto* parallaxMapping = (ShaderOpenGL*) coreSystem->getShaderSystem()->findShader("parallaxMapping");
+    auto* parallaxMapping = coreSystem->getShaderSystem()->findShader("parallaxMapping");
     ((ParallaxMappingShader*) parallaxMapping)->ambient = ambientLight;
     ((ParallaxMappingShader*) parallaxMapping)->diffuse = diffuseLight;
     ((ParallaxMappingShader*) parallaxMapping)->specular = specularLight;
@@ -80,22 +83,26 @@ int main(int argc, char* argv[]) {
 //    auto* cubeIluminado = coreSystem->getResourcesSystem()->getRenderable("CubeIluminado");
 //    cube->material = new Material("color", (ShaderOpenGL*) coreSystem->getShaderSystem()->findShader("color"));
 
+    auto* cube = coreSystem->getResourcesSystem()->getRenderable("PlanePara");
+//    auto* cube = coreSystem->getResourcesSystem()->getRenderable("PlaneTestPara");
 //    auto* cube = coreSystem->getResourcesSystem()->getRenderable("PlaneParaBrick");
-    auto* cube = coreSystem->getResourcesSystem()->getRenderable("SpherePara");
+//    auto* cube = coreSystem->getResourcesSystem()->getRenderable("PlaneSillon");
+//    auto* cubeIluminado = coreSystem->getResourcesSystem()->getRenderable("SpherePara");
     cube->setPosition(0.0, 0.0, 0.0);
-    auto* cubeRenderable = new RenderableOpenGL(cube);
-    cubeRenderable->prepareMaterial(coreSystem->getShaderSystem());
-    renderManager->renderableFactoryOpenGl->createRenderableBuffers(cubeRenderable);
-    renderManager->renderables.push_back(cubeRenderable);
-    closeEvent->cubeElements.push_back(cubeRenderable->renderable);
+    cube->prepareMaterial(coreSystem->getShaderSystem());
+    renderManager->renderableFactoryOpenGl->createRenderableBuffers(cube);
+    renderManager->renderables.push_back(cube);
+    closeEvent->cubeElements.push_back(cube);
+    closeEvent->shader = dynamic_cast<ParallaxMappingShader *>(parallaxMapping);
 
 //    auto* cubeIluminado = coreSystem->getResourcesSystem()->getRenderable("CubeIluminado");
-//    auto* cubeRenderableIluminado = new RenderableOpenGL(cubeIluminado);
-//    cubeRenderableIluminado->prepareMaterial(coreSystem->getShaderSystem());
-//    renderManager->renderableFactoryOpenGl->createRenderableBuffers(cubeRenderableIluminado);
-//    renderManager->renderables.push_back(cubeRenderableIluminado);
-//    closeEvent->cubeElements.push_back(cubeRenderableIluminado->renderable);
-    closeEvent->shader = dynamic_cast<ParallaxMappingShader *>(parallaxMapping);
+//    cubeIluminado->prepareMaterial(coreSystem->getShaderSystem());
+//    renderManager->renderableFactoryOpenGl->createRenderableBuffers(cubeIluminado);
+//    renderManager->renderables.push_back(cubeIluminado);
+//    closeEvent->cubeElements.push_back(cubeIluminado);
+
+    guiFactory->createMainWindow(guiEditorWindows);
+//    renderManager->
 
     coreSystem->startGame();
     return 0;

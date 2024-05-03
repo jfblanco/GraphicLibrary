@@ -1,10 +1,10 @@
 #ifndef ENGINETEST_NORMALMAPPINGSHADER_H
 #define ENGINETEST_NORMALMAPPINGSHADER_H
 
-#include <ShaderOpenGL.h>
+#include <Shader.h>
 
 class Light;
-class NormalMappingShader : public ShaderOpenGL {
+class NormalMappingShader : public Shader {
 public:
     Light* ambient = nullptr;
     Light* diffuse = nullptr;

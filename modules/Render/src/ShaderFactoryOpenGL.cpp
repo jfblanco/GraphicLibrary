@@ -7,12 +7,12 @@
 #include <sstream>
 #include <ShaderManager.h>
 #include "../include/ShaderFactoryOpenGL.h"
-#include "../shaders/include/ColorShader.h"
-#include "../shaders/include/NormalShader.h"
-#include "../shaders/include/TextureShader.h"
-#include "../shaders/include/LightningShader.h"
-#include "../shaders/include/NormalMappingShader.h"
-#include "../shaders/include/ParallaxMappingShader.h"
+#include <ColorShader.h>
+#include <NormalShader.h>
+#include <TextureShader.h>
+#include <LightningShader.h>
+#include <NormalMappingShader.h>
+#include <ParallaxMappingShader.h>
 
 void checkCompilingStatusLog(GLuint shaderId, GLenum flag) {
     GLint compileStatus = GL_TRUE;
@@ -72,7 +72,7 @@ char* readFile(const GLchar* _file, GLint* lenght){
     }
 }
 
-void createShader(ShaderOpenGL* shader, const GLchar *name, const GLchar *vertexPath, const GLchar *fragmentPath) {
+void createShader(Shader* shader, const GLchar *name, const GLchar *vertexPath, const GLchar *fragmentPath) {
     shader->name = name;
 
     shader->vertexShader = glCreateShader(GL_VERTEX_SHADER);

@@ -1,11 +1,12 @@
 #ifndef ENGINETEST_RENDERABLEFACTORYOPENGL_H
 #define ENGINETEST_RENDERABLEFACTORYOPENGL_H
 
-#include "RenderableOpenGL.h"
+#include "Renderable.h"
 
 class RenderableFactoryOpenGL {
 public:
-    void createRenderableBuffers(RenderableOpenGL*);
+    void createRenderableBuffers(Renderable*);
+//    void createVertexBufferObject(GLuint*, const void*, );
 };
 
 
