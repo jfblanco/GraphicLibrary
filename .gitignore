@@ -5,4 +5,5 @@ cmake-build-release-visual-studio
 **/*.png
 **/*.jpg
 **/*.jpeg
+**/*.obj
 .idea
