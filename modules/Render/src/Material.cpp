@@ -23,15 +23,30 @@ void createOpenGLTextureUniform(Uint16* _id, SDL_Surface *_texture) {
 void Material::prepareMaterial(Renderable *renderable) {
     if(renderable->material->albedo != nullptr) {
         SDL_Surface *albedoSurface = IMG_Load(renderable->material->albedo->source.c_str());
-        createOpenGLTextureUniform(&(this->albedoUBO) ,albedoSurface);
+        if(albedoSurface == NULL) {
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "[ Material ]: We couldn't open the file %s",
+                         renderable->material->albedo->source.c_str());
+        } else {
+            createOpenGLTextureUniform(&(this->albedoUBO) ,albedoSurface);
+        }
     }
     if(renderable->material->normal != nullptr) {
         SDL_Surface *normalSurface = IMG_Load(renderable->material->normal->source.c_str());
-        createOpenGLTextureUniform(&(this->normalUBO) ,normalSurface);
+        if(normalSurface == NULL) {
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "[ Material ]: We couldn't open the file %s",
+                         renderable->material->normal->source.c_str());
+        } else {
+            createOpenGLTextureUniform(&(this->normalUBO) ,normalSurface);
+        }
     }
     if(renderable->material->height != nullptr) {
         SDL_Surface *heightSurface = IMG_Load(renderable->material->height->source.c_str());
-        createOpenGLTextureUniform(&(this->heightUBO) ,heightSurface);
+        if(heightSurface == NULL) {
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "[ Material ]: We couldn't open the file %s",
+                         renderable->material->height->source.c_str());
+        } else {
+            createOpenGLTextureUniform(&(this->heightUBO) ,heightSurface);
+        }
     }
 }
 void Material::setTextures() {

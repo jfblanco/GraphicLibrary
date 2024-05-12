@@ -1,4 +1,3 @@
-#include <SDL2/SDL.h>
 #include "../modules/Core/Core.hpp"
 #include "../modules/Render/include/ShaderFactoryOpenGL.h"
 #include "events/CloseEvent.h"
@@ -19,11 +18,17 @@
 int main(int argc, char* argv[]) {
     auto* entity1 = new GameEntity();
     auto* closeEvent = new CloseEvent();
-    auto* eventManager = new EventManager();
     auto* diskManager = new ResourcesManager();
-    auto* renderManager = new RendererOpenGL();
+
+    auto* sdlApi = new SDLAPI();
+    auto* openGlApi = new OpenGLAPI();
+
+    auto* eventManager = new EventManager(sdlApi);
+    auto* renderableFactory = new RenderableFactoryOpenGL(openGlApi);
+    auto* renderManager = new RendererOpenGL(sdlApi,openGlApi,renderableFactory);
+    auto* shaderFactory = new ShaderFactoryOpenGL(sdlApi, openGlApi);
+
     auto* coreSystem = new CoreSystem();
-    auto* shaderFactory = new ShaderFactoryOpenGL();
     auto* shaderManager = new ShaderManagerOpenGL();
     auto* guiManager = new GUIManager();
     auto* guiFactory = new GUIFactory();
@@ -73,7 +78,7 @@ int main(int argc, char* argv[]) {
     ((ParallaxMappingShader*) parallaxMapping)->diffuse = diffuseLight;
     ((ParallaxMappingShader*) parallaxMapping)->specular = specularLight;
 
-//    auto* cube = coreSystem->getResourcesSystem()->getRenderable("UltraSphere");
+//    auto* cube = coreSystem->getResourcesSystem()->getRenderable("SuperPolySphere");
 //    auto* cube = coreSystem->getResourcesSystem()->getRenderable("IceCube");
 //    auto* cube = coreSystem->getResourcesSystem()->getRenderable("Pildora");
 //    auto* cube = coreSystem->getResourcesSystem()->getRenderable("dpIluminado");
@@ -87,8 +92,9 @@ int main(int argc, char* argv[]) {
 //    auto* cube = coreSystem->getResourcesSystem()->getRenderable("PlaneTestPara");
 //    auto* cube = coreSystem->getResourcesSystem()->getRenderable("PlaneParaBrick");
 //    auto* cube = coreSystem->getResourcesSystem()->getRenderable("PlaneSillon");
-//    auto* cubeIluminado = coreSystem->getResourcesSystem()->getRenderable("SpherePara");
-    cube->setPosition(0.0, 0.0, 0.0);
+//    auto* cube = coreSystem->getResourcesSystem()->getRenderable("SpherePara");
+    cube->setPosition(0.0, 1.0, 2.0);
+    cube->setRotation(1.33, 0.0, 0.0);
     cube->prepareMaterial(coreSystem->getShaderSystem());
     renderManager->renderableFactoryOpenGl->createRenderableBuffers(cube);
     renderManager->renderables.push_back(cube);

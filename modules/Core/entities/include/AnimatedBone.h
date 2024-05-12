@@ -2,7 +2,7 @@
 #define ENGINETEST_ANIMATEDBONE_H
 
 #include <vector>
-#include <SDL2/SDL.h>
+#include <SDLAPI.h>
 #include <glm/mat4x4.hpp>
 
 class Sampler;
@@ -15,7 +15,7 @@ public:
     std::vector<Sampler*> samplers;
     Sampler* currentSampler{};
     float currentTime = 0.0f;
-    Uint16 currentSamplerIndex = 0;
+    UnsignedInteger16 currentSamplerIndex = UNSIGNED_INTEGER_MAX_16;
 
 //    void calculateSamplerMatrix(Skin*,glm::mat4*,glm::mat4*, Uint16,float);
 };

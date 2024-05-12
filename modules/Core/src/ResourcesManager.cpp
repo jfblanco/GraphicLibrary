@@ -17,17 +17,14 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/common.hpp>
 
-#include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
 #include <filesystem>
 #include <iostream>
 #include <fstream>
 
-#include <GL/glew.h>
-
 struct ChannelGLTF {
-    Uint16 node;
+    UnsignedInteger16 node;
     std::vector<float> keyframes;
     std::vector<glm::vec4> rotation;
     std::vector<glm::vec3> translation;
@@ -36,18 +33,18 @@ struct ChannelGLTF {
 };
 
 struct MetallicRoughnessGLTF {
-    Uint8 baseColorTexture = SDL_MAX_UINT8;
+    UnsignedInteger8 baseColorTexture = UNSIGNED_INTEGER_MAX_8;
     GLfloat metallicFactor;
     GLfloat roughnessFactor;
 
 };
 
 struct NormalGLTF {
-    Uint8 texture = SDL_MAX_UINT8;
+    UnsignedInteger8 texture = UNSIGNED_INTEGER_MAX_8;
 };
 
 struct HeightGLTF {
-    Uint8 texture = SDL_MAX_UINT8;
+    UnsignedInteger8 texture = UNSIGNED_INTEGER_MAX_8;
 };
 
 struct MaterialGLTF {
@@ -63,27 +60,27 @@ struct ImageGLTF {
 };
 
 struct TextureGLTF {
-    Uint8 sampler;
-    Uint8 source;
+    UnsignedInteger8 sampler;
+    UnsignedInteger8 source;
 };
 
 struct SkinGLTF {
     std::string name;
     std::vector<glm::mat4> inverseBindMatrices;
-    std::vector<Uint32> joints;
+    std::vector<UnsignedInteger32> joints;
 };
 
 struct MeshGLTF {
     std::string name;
-    std::vector<Uint16> indices;
+    std::vector<UnsignedInteger16> indices;
     std::vector<glm::vec3> positions;
     std::vector<glm::vec3> normals;
     std::vector<glm::vec2> textureCoordinates;
     std::vector<glm::vec4> textureTangent;
     std::vector<glm::vec3> textureBitangent;
-    std::vector<uint8_t> joints;
+    std::vector<UnsignedInteger8> joints;
     std::vector<glm::vec4> weights;
-    Uint8 material = SDL_MAX_UINT8;
+    UnsignedInteger8 material = UNSIGNED_INTEGER_MAX_8;
 };
 
 struct AnimationGLTF {
@@ -96,8 +93,8 @@ struct NodeGLTF {
     glm::quat rotation = glm::quat(1.0f,0.0f,0.0f,0.0f);
     glm::vec4 position = glm::vec4(0.0f,0.0f,0.0f,0.0f);
     glm::vec3 scale = glm::vec3(1.0f,1.0f,1.0f);
-    std::vector<Uint32> children;
-    Uint8 mesh = SDL_MAX_UINT8;
+    std::vector<UnsignedInteger32> children;
+    UnsignedInteger8 mesh = UNSIGNED_INTEGER_MAX_8;
     SkinGLTF* skin;
 };
 
@@ -218,7 +215,7 @@ void ResourcesManager::loadOBJModel(const char *_pathToFile) {
                 model->texture.push_back(vert);
             }
             if (line.substr(0,2)=="f "){
-                Uint16 a,b,c;
+                UnsignedInteger16 a,b,c;
                 std::vector<std::string> faces;
 
                 split(line, faces, std::string(" "));
@@ -248,13 +245,13 @@ void ResourcesManager::loadOBJModel(const char *_pathToFile) {
     }
 }
 
-void loadGLTFMeshPositionsFromFile(MeshGLTF *meshGltf, Uint32 positionIndex, Json::Value _accessors, Json::Value _buffersViews, std::ifstream *_jsonFile) {
-    Uint16 bufferView = _accessors[positionIndex]["bufferView"].asUInt();
-    Uint32 count = _accessors[positionIndex]["count"].as<Uint32>();
+void loadGLTFMeshPositionsFromFile(MeshGLTF *meshGltf, UnsignedInteger32 positionIndex, Json::Value _accessors, Json::Value _buffersViews, std::ifstream *_jsonFile) {
+    UnsignedInteger16 bufferView = _accessors[positionIndex]["bufferView"].asUInt();
+    UnsignedInteger32 count = _accessors[positionIndex]["count"].as<UnsignedInteger32>();
     std::string type = _accessors[positionIndex]["type"].asString();
 
-    Uint32 indicesByteLength = _buffersViews[bufferView]["byteLength"].as<Uint32>();
-    Uint32 indicesByteOffset = _buffersViews[bufferView]["byteOffset"].as<Uint32>();
+    UnsignedInteger32 indicesByteLength = _buffersViews[bufferView]["byteLength"].as<UnsignedInteger32>();
+    UnsignedInteger32 indicesByteOffset = _buffersViews[bufferView]["byteOffset"].as<UnsignedInteger32>();
 
     if(_jsonFile->is_open()) {
         meshGltf->positions.resize(count);
@@ -266,13 +263,13 @@ void loadGLTFMeshPositionsFromFile(MeshGLTF *meshGltf, Uint32 positionIndex, Jso
 //    }
 }
 
-void loadGLTFMeshNormalsFromFile(MeshGLTF *meshGltf, Uint32 normalsIndex, Json::Value _accessors, Json::Value _buffersViews, std::ifstream *_jsonFile) {
-    Uint16 bufferView = _accessors[normalsIndex]["bufferView"].asUInt();
-    Uint32 count = _accessors[normalsIndex]["count"].as<Uint32>();
+void loadGLTFMeshNormalsFromFile(MeshGLTF *meshGltf, UnsignedInteger32 normalsIndex, Json::Value _accessors, Json::Value _buffersViews, std::ifstream *_jsonFile) {
+    UnsignedInteger16 bufferView = _accessors[normalsIndex]["bufferView"].asUInt();
+    UnsignedInteger32 count = _accessors[normalsIndex]["count"].as<UnsignedInteger32>();
     std::string type = _accessors[normalsIndex]["type"].asString();
 
-    Uint32 indicesByteLength = _buffersViews[bufferView]["byteLength"].as<Uint32>();
-    Uint32 indicesByteOffset = _buffersViews[bufferView]["byteOffset"].as<Uint32>();
+    UnsignedInteger32 indicesByteLength = _buffersViews[bufferView]["byteLength"].as<UnsignedInteger32>();
+    UnsignedInteger32 indicesByteOffset = _buffersViews[bufferView]["byteOffset"].as<UnsignedInteger32>();
 
     if(_jsonFile->is_open()) {
         meshGltf->normals.resize(count);
@@ -281,13 +278,13 @@ void loadGLTFMeshNormalsFromFile(MeshGLTF *meshGltf, Uint32 normalsIndex, Json::
     }
 }
 
-void loadGLTFMeshTextureCoordinatesFromFile(MeshGLTF *meshGltf, Uint32 textCoordIndex, Json::Value _accessors, Json::Value _buffersViews, std::ifstream *_jsonFile) {
-    Uint16 bufferView = _accessors[textCoordIndex]["bufferView"].asUInt();
-    Uint32 count = _accessors[textCoordIndex]["count"].as<Uint32>();
+void loadGLTFMeshTextureCoordinatesFromFile(MeshGLTF *meshGltf, UnsignedInteger32 textCoordIndex, Json::Value _accessors, Json::Value _buffersViews, std::ifstream *_jsonFile) {
+    UnsignedInteger16 bufferView = _accessors[textCoordIndex]["bufferView"].asUInt();
+    UnsignedInteger32 count = _accessors[textCoordIndex]["count"].as<UnsignedInteger32>();
     std::string type = _accessors[textCoordIndex]["type"].asString();
 
-    Uint32 indicesByteLength = _buffersViews[bufferView]["byteLength"].as<Uint32>();
-    Uint32 indicesByteOffset = _buffersViews[bufferView]["byteOffset"].as<Uint32>();
+    UnsignedInteger32 indicesByteLength = _buffersViews[bufferView]["byteLength"].as<UnsignedInteger32>();
+    UnsignedInteger32 indicesByteOffset = _buffersViews[bufferView]["byteOffset"].as<UnsignedInteger32>();
 
     if(_jsonFile->is_open()) {
         meshGltf->textureCoordinates.resize(count);
@@ -296,13 +293,13 @@ void loadGLTFMeshTextureCoordinatesFromFile(MeshGLTF *meshGltf, Uint32 textCoord
     }
 }
 
-void loadGLTFMeshTangentFromFile(MeshGLTF *meshGltf, Uint32 textCoordIndex, Json::Value _accessors, Json::Value _buffersViews, std::ifstream *_jsonFile) {
-    Uint16 bufferView = _accessors[textCoordIndex]["bufferView"].asUInt();
-    Uint32 count = _accessors[textCoordIndex]["count"].as<Uint32>();
+void loadGLTFMeshTangentFromFile(MeshGLTF *meshGltf, UnsignedInteger32 textCoordIndex, Json::Value _accessors, Json::Value _buffersViews, std::ifstream *_jsonFile) {
+    UnsignedInteger16 bufferView = _accessors[textCoordIndex]["bufferView"].asUInt();
+    UnsignedInteger32 count = _accessors[textCoordIndex]["count"].as<UnsignedInteger32>();
     std::string type = _accessors[textCoordIndex]["type"].asString();
 
-    Uint32 indicesByteLength = _buffersViews[bufferView]["byteLength"].as<Uint32>();
-    Uint32 indicesByteOffset = _buffersViews[bufferView]["byteOffset"].as<Uint32>();
+    UnsignedInteger32 indicesByteLength = _buffersViews[bufferView]["byteLength"].as<UnsignedInteger32>();
+    UnsignedInteger32 indicesByteOffset = _buffersViews[bufferView]["byteOffset"].as<UnsignedInteger32>();
 
     if(_jsonFile->is_open()) {
         meshGltf->textureTangent.resize(count);
@@ -311,13 +308,13 @@ void loadGLTFMeshTangentFromFile(MeshGLTF *meshGltf, Uint32 textCoordIndex, Json
     }
 }
 
-void loadGLTFMeshJointsFromFile(MeshGLTF *meshGltf, Uint32 jointIndex, Json::Value _accessors, Json::Value _buffersViews, std::ifstream *_jsonFile) {
-    Uint16 bufferView = _accessors[jointIndex]["bufferView"].asUInt();
-    Uint32 count = _accessors[jointIndex]["count"].as<Uint32>();
+void loadGLTFMeshJointsFromFile(MeshGLTF *meshGltf, UnsignedInteger32 jointIndex, Json::Value _accessors, Json::Value _buffersViews, std::ifstream *_jsonFile) {
+    UnsignedInteger16 bufferView = _accessors[jointIndex]["bufferView"].asUInt();
+    UnsignedInteger32 count = _accessors[jointIndex]["count"].as<UnsignedInteger32>();
     std::string type = _accessors[jointIndex]["type"].asString();
 
-    Uint32 indicesByteLength = _buffersViews[bufferView]["byteLength"].as<Uint32>();
-    Uint32 indicesByteOffset = _buffersViews[bufferView]["byteOffset"].as<Uint32>();
+    UnsignedInteger32 indicesByteLength = _buffersViews[bufferView]["byteLength"].as<UnsignedInteger32>();
+    UnsignedInteger32 indicesByteOffset = _buffersViews[bufferView]["byteOffset"].as<UnsignedInteger32>();
 
     if(_jsonFile->is_open()) {
         meshGltf->joints.resize(count * 4);
@@ -334,13 +331,13 @@ void loadGLTFMeshJointsFromFile(MeshGLTF *meshGltf, Uint32 jointIndex, Json::Val
     }
 }
 
-void loadGLTFMeshWeightsFromFile(MeshGLTF *meshGltf, Uint32 weightsIndex, Json::Value _accessors, Json::Value _buffersViews, std::ifstream *_jsonFile) {
-    Uint16 bufferView = _accessors[weightsIndex]["bufferView"].asUInt();
-    Uint32 count = _accessors[weightsIndex]["count"].as<Uint32>();
+void loadGLTFMeshWeightsFromFile(MeshGLTF *meshGltf, UnsignedInteger32 weightsIndex, Json::Value _accessors, Json::Value _buffersViews, std::ifstream *_jsonFile) {
+    UnsignedInteger16 bufferView = _accessors[weightsIndex]["bufferView"].asUInt();
+    UnsignedInteger32 count = _accessors[weightsIndex]["count"].as<UnsignedInteger32>();
     std::string type = _accessors[weightsIndex]["type"].asString();
 
-    Uint32 indicesByteLength = _buffersViews[bufferView]["byteLength"].as<Uint32>();
-    Uint32 indicesByteOffset = _buffersViews[bufferView]["byteOffset"].as<Uint32>();
+    UnsignedInteger32 indicesByteLength = _buffersViews[bufferView]["byteLength"].as<UnsignedInteger32>();
+    UnsignedInteger32 indicesByteOffset = _buffersViews[bufferView]["byteOffset"].as<UnsignedInteger32>();
 
     if(_jsonFile->is_open()) {
         meshGltf->weights.resize(count);
@@ -349,13 +346,13 @@ void loadGLTFMeshWeightsFromFile(MeshGLTF *meshGltf, Uint32 weightsIndex, Json::
     }
 }
 
-void loadGLTFMeshIndicesFromFile(MeshGLTF *meshGltf, Uint32 indicesIndex, Json::Value _accessors, Json::Value _buffersViews, std::ifstream *_jsonFile) {
-    Uint16 bufferView = _accessors[indicesIndex]["bufferView"].asUInt();
-    Uint32 count = _accessors[indicesIndex]["count"].as<Uint32>();
+void loadGLTFMeshIndicesFromFile(MeshGLTF *meshGltf, UnsignedInteger32 indicesIndex, Json::Value _accessors, Json::Value _buffersViews, std::ifstream *_jsonFile) {
+    UnsignedInteger16 bufferView = _accessors[indicesIndex]["bufferView"].asUInt();
+    UnsignedInteger32 count = _accessors[indicesIndex]["count"].as<UnsignedInteger32>();
     std::string type = _accessors[indicesIndex]["type"].asString();
 
-    Uint32 indicesByteLength = _buffersViews[bufferView]["byteLength"].as<Uint32>();
-    Uint32 indicesByteOffset = _buffersViews[bufferView]["byteOffset"].as<Uint32>();
+    UnsignedInteger32 indicesByteLength = _buffersViews[bufferView]["byteLength"].as<UnsignedInteger32>();
+    UnsignedInteger32 indicesByteOffset = _buffersViews[bufferView]["byteOffset"].as<UnsignedInteger32>();
 
     if(_jsonFile->is_open()) {
         meshGltf->indices.resize(count);
@@ -369,34 +366,34 @@ void loadGLTFMeshFromFile(FileGLTF *_fileGltf, Json::Value _mesh, const Json::Va
     meshGltf.name = _mesh["name"].asString();
     for (auto primitive: _mesh["primitives"]) {
         if(!primitive["attributes"]["POSITION"].isNull()) {
-            loadGLTFMeshPositionsFromFile(&meshGltf, primitive["attributes"]["POSITION"].as<Uint32>(), _accessors, _buffersViews, _jsonFile);
+            loadGLTFMeshPositionsFromFile(&meshGltf, primitive["attributes"]["POSITION"].as<UnsignedInteger32>(), _accessors, _buffersViews, _jsonFile);
         }
         if(!primitive["indices"].isNull()) {
-            loadGLTFMeshIndicesFromFile(&meshGltf, primitive["indices"].as<Uint32>(), _accessors, _buffersViews, _jsonFile);
+            loadGLTFMeshIndicesFromFile(&meshGltf, primitive["indices"].as<UnsignedInteger32>(), _accessors, _buffersViews, _jsonFile);
         }
         if(!primitive["material"].isNull()) {
-            meshGltf.material = primitive["material"].as<Uint32>();
+            meshGltf.material = primitive["material"].as<UnsignedInteger32>();
         }
         if(!primitive["attributes"]["NORMAL"].isNull()) {
-            loadGLTFMeshNormalsFromFile(&meshGltf, primitive["attributes"]["NORMAL"].as<Uint32>(), _accessors, _buffersViews, _jsonFile);
+            loadGLTFMeshNormalsFromFile(&meshGltf, primitive["attributes"]["NORMAL"].as<UnsignedInteger32>(), _accessors, _buffersViews, _jsonFile);
         }
         if(!primitive["attributes"]["TEXCOORD_0"].isNull()) {
-            loadGLTFMeshTextureCoordinatesFromFile(&meshGltf, primitive["attributes"]["TEXCOORD_0"].as<Uint32>(), _accessors, _buffersViews, _jsonFile);
+            loadGLTFMeshTextureCoordinatesFromFile(&meshGltf, primitive["attributes"]["TEXCOORD_0"].as<UnsignedInteger32>(), _accessors, _buffersViews, _jsonFile);
         }
         if(!primitive["attributes"]["TANGENT"].isNull()) {
-            loadGLTFMeshTangentFromFile(&meshGltf, primitive["attributes"]["TANGENT"].as<Uint32>(), _accessors, _buffersViews, _jsonFile);
+            loadGLTFMeshTangentFromFile(&meshGltf, primitive["attributes"]["TANGENT"].as<UnsignedInteger32>(), _accessors, _buffersViews, _jsonFile);
         }
         if(!primitive["attributes"]["JOINTS_0"].isNull()) {
-            loadGLTFMeshJointsFromFile(&meshGltf, primitive["attributes"]["JOINTS_0"].as<Uint32>(), _accessors, _buffersViews, _jsonFile);
+            loadGLTFMeshJointsFromFile(&meshGltf, primitive["attributes"]["JOINTS_0"].as<UnsignedInteger32>(), _accessors, _buffersViews, _jsonFile);
         }
         if(!primitive["attributes"]["WEIGHTS_0"].isNull()) {
-            loadGLTFMeshWeightsFromFile(&meshGltf, primitive["attributes"]["WEIGHTS_0"].as<Uint32>(), _accessors, _buffersViews, _jsonFile);
+            loadGLTFMeshWeightsFromFile(&meshGltf, primitive["attributes"]["WEIGHTS_0"].as<UnsignedInteger32>(), _accessors, _buffersViews, _jsonFile);
         }
     }
     // Vertex Tangent and Bi-tangent
 //    if(meshGltf.normals.size() == meshGltf.textureTangent.size()) {
 //        meshGltf.textureBitangent.resize(meshGltf.normals.size());
-//        for(Uint32 i = 0; i < meshGltf.normals.size(); i++) {
+//        for(UnsignedInteger32 i = 0; i < meshGltf.normals.size(); i++) {
 //            meshGltf.textureBitangent[i] = glm::cross(meshGltf.normals[i],
 //                                                      glm::vec3(meshGltf.textureTangent[i].x,
 //                                                                meshGltf.textureTangent[i].y,
@@ -406,7 +403,7 @@ void loadGLTFMeshFromFile(FileGLTF *_fileGltf, Json::Value _mesh, const Json::Va
 //    } else {
 //        meshGltf.textureBitangent.resize(meshGltf.normals.size());
 //        meshGltf.textureTangent.resize(meshGltf.normals.size());
-//        for(Uint32 i = 0; i < meshGltf.normals.size(); i++) {
+//        for(UnsignedInteger32 i = 0; i < meshGltf.normals.size(); i++) {
 //            meshGltf.textureBitangent[i] = glm::vec3(0.05,0.06,0.05);
 //            meshGltf.textureTangent[i] = glm::vec4(0.05,0.06,0.05, 1.0);
 //        }
@@ -436,10 +433,10 @@ void loadGLTFMeshFromFile(FileGLTF *_fileGltf, Json::Value _mesh, const Json::Va
         meshGltf.textureTangent.resize(meshGltf.positions.size());
         meshGltf.textureBitangent.resize(meshGltf.positions.size());
 
-        for(Uint32 i = 0; i < meshGltf.indices.size(); i+=3) {
-            Uint32 index1 = meshGltf.indices[i];
-            Uint32 index2 = meshGltf.indices[i+1];
-            Uint32 index3 = meshGltf.indices[i+2];
+        for(UnsignedInteger32 i = 0; i < meshGltf.indices.size(); i+=3) {
+            UnsignedInteger32 index1 = meshGltf.indices[i];
+            UnsignedInteger32 index2 = meshGltf.indices[i+1];
+            UnsignedInteger32 index3 = meshGltf.indices[i+2];
 
             vertex1 = meshGltf.positions[index1];
             vertex2 = meshGltf.positions[index2];
@@ -481,7 +478,7 @@ void loadGLTFMeshFromFile(FileGLTF *_fileGltf, Json::Value _mesh, const Json::Va
 
 Material* createMaterial(MaterialGLTF materialGltf, FileGLTF *_fileGltf, ResourcesManager *resourcesManager) {
     auto* material = new Material(materialGltf.name.c_str(), nullptr);
-    if(materialGltf.metallicRoughnessGltf.baseColorTexture != SDL_MAX_UINT8) {
+    if(materialGltf.metallicRoughnessGltf.baseColorTexture != UNSIGNED_INTEGER_MAX_8) {
         TextureGLTF textureGLTF = _fileGltf->textures[materialGltf.metallicRoughnessGltf.baseColorTexture];
         ImageGLTF imageGltf = _fileGltf->images[textureGLTF.source];
         auto* texture = new Texture();
@@ -489,7 +486,7 @@ Material* createMaterial(MaterialGLTF materialGltf, FileGLTF *_fileGltf, Resourc
         texture->source = resourcesManager->pathToImagesResources + imageGltf.source;
         material->albedo = texture;
     }
-    if(materialGltf.normalGltf.texture != SDL_MAX_UINT8) {
+    if(materialGltf.normalGltf.texture != UNSIGNED_INTEGER_MAX_8) {
         TextureGLTF textureGLTF = _fileGltf->textures[materialGltf.normalGltf.texture];
         ImageGLTF imageGltf = _fileGltf->images[textureGLTF.source];
         auto* texture = new Texture();
@@ -497,7 +494,7 @@ Material* createMaterial(MaterialGLTF materialGltf, FileGLTF *_fileGltf, Resourc
         texture->source = resourcesManager->pathToImagesResources + imageGltf.source;
         material->normal = texture;
     }
-    if(materialGltf.heightGltf.texture != SDL_MAX_UINT8) {
+    if(materialGltf.heightGltf.texture != UNSIGNED_INTEGER_MAX_8) {
         TextureGLTF textureGLTF = _fileGltf->textures[materialGltf.heightGltf.texture];
         ImageGLTF imageGltf = _fileGltf->images[textureGLTF.source];
         auto* texture = new Texture();
@@ -523,7 +520,7 @@ Renderable* createModelFromNode(NodeGLTF *nodeGltf, MeshGLTF *meshGltf, FileGLTF
     model->bitangent.insert(model->bitangent.end(), meshGltf->textureBitangent.begin(), meshGltf->textureBitangent.end());
     model->texture.insert(model->texture.end(), meshGltf->textureCoordinates.begin(), meshGltf->textureCoordinates.end());
     model->weights.insert(model->weights.end(), meshGltf->weights.begin(), meshGltf->weights.end());
-    if(meshGltf->material != SDL_MAX_UINT8) {
+    if(meshGltf->material != UNSIGNED_INTEGER_MAX_8) {
         model->material = createMaterial(_fileGltf->materials[meshGltf->material], _fileGltf, resourcesManager);
     }
     for(int i=0; i<meshGltf->joints.size();i+=4) {
@@ -668,7 +665,7 @@ void createAnimationFromNode(ResourcesManager *_resourceManager, const std::stri
 
 void ResourcesManager::createEngineElements(FileGLTF *_fileGltf) {
     for(auto& node : _fileGltf->nodes) {
-        if(node.mesh != SDL_MAX_UINT8) {
+        if(node.mesh != UNSIGNED_INTEGER_MAX_8) {
             this->models.insert(std::pair<std::string, Renderable*>(node.name, createModelFromNode(&node, &(_fileGltf->meshes[node.mesh]), _fileGltf, this)));
         }
     }
@@ -686,10 +683,10 @@ void loadGLTFSkinFromFile(FileGLTF *_fileGltf, Json::Value _skin, const Json::Va
     SkinGLTF skinGltf;
     skinGltf.name = _skin["name"].asString();
 
-    Uint32 inversedMatrixAccessor = _skin["inverseBindMatrices"].as<Uint32>();
-    Uint32 inversedMatrixBufferView = _accessors[inversedMatrixAccessor]["bufferView"].as<Uint32>();
+    UnsignedInteger32 inversedMatrixAccessor = _skin["inverseBindMatrices"].as<UnsignedInteger32>();
+    UnsignedInteger32 inversedMatrixBufferView = _accessors[inversedMatrixAccessor]["bufferView"].as<UnsignedInteger32>();
     std::string inversedMatrixBufferViewType = _accessors[inversedMatrixAccessor]["type"].asString();
-    Uint32 count = _accessors[inversedMatrixAccessor]["count"].as<Uint32>();
+    UnsignedInteger32 count = _accessors[inversedMatrixAccessor]["count"].as<UnsignedInteger32>();
     std::streamoff byteOffset = _buffersViews[inversedMatrixBufferView]["byteOffset"].as<std::streamoff>();
     std::streamoff arrayByteLenght = _buffersViews[inversedMatrixBufferView]["byteLength"].as<std::streamoff>();
 
@@ -700,7 +697,7 @@ void loadGLTFSkinFromFile(FileGLTF *_fileGltf, Json::Value _skin, const Json::Va
     }
 
     for(const Json::Value& joint : _skin["joints"]) {
-        skinGltf.joints.push_back(joint.as<Uint32>());
+        skinGltf.joints.push_back(joint.as<UnsignedInteger32>());
     }
     _fileGltf->skins.push_back(skinGltf);
 }
@@ -710,27 +707,27 @@ void loadGLTFAnimationFromFile(FileGLTF *_fileGltf, Json::Value _animation, cons
     animationGltf.name = _animation["name"].asString();
     for(Json::Value channel : _animation["channels"]) {
         ChannelGLTF channelGltf;
-        Uint32 sampler = channel["sampler"].as<Uint32>();
-        channelGltf.node = channel["target"]["node"].as<Uint32>();
+        UnsignedInteger32 sampler = channel["sampler"].as<UnsignedInteger32>();
+        channelGltf.node = channel["target"]["node"].as<UnsignedInteger32>();
         channelGltf.targetName = channel["target"]["path"].asString();
 
         if(channelGltf.targetName == "rotation") {
-            Uint32 input = _animation["samplers"][sampler]["input"].as<Uint32>();
-            Uint32 output = _animation["samplers"][sampler]["output"].as<Uint32>();
+            UnsignedInteger32 input = _animation["samplers"][sampler]["input"].as<UnsignedInteger32>();
+            UnsignedInteger32 output = _animation["samplers"][sampler]["output"].as<UnsignedInteger32>();
 
-            Uint32 bufferView = _accessors[input]["bufferView"].as<Uint32>();
-            Uint32 count = _accessors[input]["count"].as<Uint32>();
+            UnsignedInteger32 bufferView = _accessors[input]["bufferView"].as<UnsignedInteger32>();
+            UnsignedInteger32 count = _accessors[input]["count"].as<UnsignedInteger32>();
             std::string type = _accessors[input]["type"].asString();
 
-            Uint32 byteOffsetChannel = _buffersViews[bufferView]["byteOffset"].as<Uint32>();
-            Uint32 byteLength = _buffersViews[bufferView]["byteLength"].as<Uint32>();
+            UnsignedInteger32 byteOffsetChannel = _buffersViews[bufferView]["byteOffset"].as<UnsignedInteger32>();
+            UnsignedInteger32 byteLength = _buffersViews[bufferView]["byteLength"].as<UnsignedInteger32>();
 
-            Uint32 outputBufferView = _accessors[output]["bufferView"].as<Uint32>();
-            Uint32 outputCount = _accessors[output]["count"].as<Uint32>();
+            UnsignedInteger32 outputBufferView = _accessors[output]["bufferView"].as<UnsignedInteger32>();
+            UnsignedInteger32 outputCount = _accessors[output]["count"].as<UnsignedInteger32>();
             std::string outputType = _accessors[output]["type"].asString();
 
-            Uint32 outputByteOffset = _buffersViews[outputBufferView]["byteOffset"].as<Uint32>();
-            Uint32 outputByteLength = _buffersViews[outputBufferView]["byteLength"].as<Uint32>();
+            UnsignedInteger32 outputByteOffset = _buffersViews[outputBufferView]["byteOffset"].as<UnsignedInteger32>();
+            UnsignedInteger32 outputByteLength = _buffersViews[outputBufferView]["byteLength"].as<UnsignedInteger32>();
 
             channelGltf.keyframes.resize(count);
             _jsonFile->seekg(byteOffsetChannel);
@@ -742,22 +739,22 @@ void loadGLTFAnimationFromFile(FileGLTF *_fileGltf, Json::Value _animation, cons
         }
 
         if(channelGltf.targetName == "translation") {
-            Uint32 input = _animation["samplers"][sampler]["input"].as<Uint32>();
-            Uint32 output = _animation["samplers"][sampler]["output"].as<Uint32>();
+            UnsignedInteger32 input = _animation["samplers"][sampler]["input"].as<UnsignedInteger32>();
+            UnsignedInteger32 output = _animation["samplers"][sampler]["output"].as<UnsignedInteger32>();
 
-            Uint32 bufferView = _accessors[input]["bufferView"].as<Uint32>();
-            Uint32 count = _accessors[input]["count"].as<Uint32>();
+            UnsignedInteger32 bufferView = _accessors[input]["bufferView"].as<UnsignedInteger32>();
+            UnsignedInteger32 count = _accessors[input]["count"].as<UnsignedInteger32>();
             std::string type = _accessors[input]["type"].asString();
 
-            Uint32 byteOffsetChannel = _buffersViews[bufferView]["byteOffset"].as<Uint32>();
-            Uint32 byteLength = _buffersViews[bufferView]["byteLength"].as<Uint32>();
+            UnsignedInteger32 byteOffsetChannel = _buffersViews[bufferView]["byteOffset"].as<UnsignedInteger32>();
+            UnsignedInteger32 byteLength = _buffersViews[bufferView]["byteLength"].as<UnsignedInteger32>();
 
-            Uint32 outputBufferView = _accessors[output]["bufferView"].as<Uint32>();
-            Uint32 outputCount = _accessors[output]["count"].as<Uint32>();
+            UnsignedInteger32 outputBufferView = _accessors[output]["bufferView"].as<UnsignedInteger32>();
+            UnsignedInteger32 outputCount = _accessors[output]["count"].as<UnsignedInteger32>();
             std::string outputType = _accessors[output]["type"].asString();
 
-            Uint32 outputByteOffset = _buffersViews[outputBufferView]["byteOffset"].as<Uint32>();
-            Uint32 outputByteLength = _buffersViews[outputBufferView]["byteLength"].as<Uint32>();
+            UnsignedInteger32 outputByteOffset = _buffersViews[outputBufferView]["byteOffset"].as<UnsignedInteger32>();
+            UnsignedInteger32 outputByteLength = _buffersViews[outputBufferView]["byteLength"].as<UnsignedInteger32>();
 
             channelGltf.keyframes.resize(count);
             _jsonFile->seekg(byteOffsetChannel);
@@ -780,7 +777,7 @@ void loadGLTFNodeFromFile(FileGLTF *_fileGltf, Json::Value _node, const Json::Va
         nodeGltf.position = glm::vec4(_node["translation"][0].asFloat(), _node["translation"][1].asFloat(), _node["translation"][2].asFloat(), 0.0f);
     }
     if(!_node["mesh"].isNull()) {
-        nodeGltf.mesh =_node["mesh"].as<Uint32>();
+        nodeGltf.mesh =_node["mesh"].as<UnsignedInteger32>();
     }
     if(!_node["scale"].isNull()) {
         nodeGltf.scale = glm::vec3(_node["scale"][0].asFloat(), _node["scale"][1].asFloat(), _node["scale"][2].asFloat());
@@ -790,7 +787,7 @@ void loadGLTFNodeFromFile(FileGLTF *_fileGltf, Json::Value _node, const Json::Va
     }
     if(!_node["children"].isNull()) {
         for(const Json::Value& child : _node["children"]) {
-            nodeGltf.children.push_back(child.as<Uint32>());
+            nodeGltf.children.push_back(child.as<UnsignedInteger32>());
         }
     }
     _fileGltf->nodes.push_back(nodeGltf);
@@ -805,8 +802,8 @@ void loadGLTFImagesFromFile(FileGLTF *_fileGltf, Json::Value _image) {
 
 void loadGLTFTexturesFromFile(FileGLTF *_fileGltf, Json::Value _texture) {
     TextureGLTF texture;
-    texture.source = _texture["source"].as<Uint32>();
-    texture.sampler = _texture["sampler"].as<Uint32>();
+    texture.source = _texture["source"].as<UnsignedInteger32>();
+    texture.sampler = _texture["sampler"].as<UnsignedInteger32>();
     _fileGltf->textures.push_back(texture);
 }
 
@@ -814,7 +811,7 @@ void loadGLTFMaterialsFromFile(FileGLTF *_fileGltf, Json::Value _material) {
     MaterialGLTF material;
     material.name = _material["name"].asString();
     if(!_material["pbrMetallicRoughness"]["baseColorTexture"]["index"].isNull()) {
-        material.metallicRoughnessGltf.baseColorTexture = _material["pbrMetallicRoughness"]["baseColorTexture"]["index"].as<Uint32>();
+        material.metallicRoughnessGltf.baseColorTexture = _material["pbrMetallicRoughness"]["baseColorTexture"]["index"].as<UnsignedInteger32>();
     }
     if(!_material["pbrMetallicRoughness"]["roughnessFactor"].isNull()) {
         material.metallicRoughnessGltf.roughnessFactor = _material["pbrMetallicRoughness"]["roughnessFactor"].as<GLfloat>();
@@ -823,10 +820,10 @@ void loadGLTFMaterialsFromFile(FileGLTF *_fileGltf, Json::Value _material) {
         material.metallicRoughnessGltf.metallicFactor = _material["pbrMetallicRoughness"]["metallicFactor"].as<GLfloat>();
     }
     if(!_material["normalTexture"]["index"].isNull()) {
-        material.normalGltf.texture = _material["normalTexture"]["index"].as<Uint32>();
+        material.normalGltf.texture = _material["normalTexture"]["index"].as<UnsignedInteger32>();
     }
     if(!_material["heightTexture"]["index"].isNull()) {
-        material.heightGltf.texture = _material["heightTexture"]["index"].as<Uint32>();
+        material.heightGltf.texture = _material["heightTexture"]["index"].as<UnsignedInteger32>();
     }
     _fileGltf->materials.push_back(material);
 }

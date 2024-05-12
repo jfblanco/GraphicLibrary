@@ -1,18 +1,18 @@
 #ifndef GAMEENGINE_EVENTLISTENER_H
 #define GAMEENGINE_EVENTLISTENER_H
 
-#include <SDL2/SDL.h>
+#include <SDLAPI.h>
 
 class EventListener {
 public:
     EventListener() = default;
     ~EventListener() = default;
-    virtual void quitTimeEvent(SDL_Event) = 0;
-    virtual void keyDownTimeEvent(SDL_Event) = 0;
-    virtual void mouseButtonPressed(SDL_Event) = 0;
-    virtual void mouseButtonReleased(SDL_Event) = 0;
-    virtual void mouseScroll(SDL_Event) = 0;
-    virtual void mouseMove(SDL_Event) = 0;
+    virtual void quitTimeEvent(EngineEvent) = 0;
+    virtual void keyDownTimeEvent(EngineEvent) = 0;
+    virtual void mouseButtonPressed(EngineEvent) = 0;
+    virtual void mouseButtonReleased(EngineEvent) = 0;
+    virtual void mouseScroll(EngineEvent) = 0;
+    virtual void mouseMove(EngineEvent) = 0;
 };
 
 #endif //GAMEENGINE_EVENTLISTENER_H

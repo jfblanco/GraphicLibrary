@@ -5,7 +5,6 @@
 #include <string>
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
-#include <SDL2/SDL.h>
 
 class Joint {
 public:
@@ -15,14 +14,14 @@ public:
     glm::vec4 tall{};
     std::string name{};
 
-    Uint16 index = 0;
+    UnsignedInteger16 index = UNSIGNED_INTEGER_MAX_16;
     glm::mat4 jointToModelMatrix{};
     glm::mat4 modelToJointMatrix{};
     glm::mat4 poseMatrix{};
     std::vector<glm::vec4> size;
 
     Joint *parent = nullptr;
-    std::vector<Uint32> children{};
+    std::vector<UnsignedInteger32> children{};
     std::vector<Joint*> childrenObjects{};
 
     Joint() = default;

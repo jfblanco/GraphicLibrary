@@ -17,7 +17,6 @@ if(ENGINE_CORE_SHARED)
     message("Core Engine Using Shared Library ENGINE_CORE_SHARED = ${ENGINE_CORE_SHARED}")
     add_library(Core SHARED
             entities/src/GameEntity.cpp
-            entities/src/Renderable.cpp
             entities/src/Light.cpp
             interfaces/src/RenderingSystemMock.cpp
             interfaces/src/InputSystemMock.cpp
@@ -28,13 +27,14 @@ if(ENGINE_CORE_SHARED)
             external/jsoncpp/src/lib_json/json_value.cpp
             external/jsoncpp/src/lib_json/json_writer.cpp
             src/ResourcesManager.cpp
+            src/SDLAPI.cpp
+            src/OpenGLAPI.cpp
             src/CoreSystem.cpp
     )
 else(ENGINE_CORE_SHARED)
     message("Core Engine Using Static Library ENGINE_CORE_SHARED = ${ENGINE_CORE_SHARED}")
     add_library(Core STATIC
             entities/src/GameEntity.cpp
-            entities/src/Renderable.cpp
             entities/src/Light.cpp
             interfaces/src/RenderingSystemMock.cpp
             interfaces/src/InputSystemMock.cpp
@@ -45,11 +45,14 @@ else(ENGINE_CORE_SHARED)
             external/jsoncpp/src/lib_json/json_value.cpp
             external/jsoncpp/src/lib_json/json_writer.cpp
             src/ResourcesManager.cpp
+            src/SDLAPI.cpp
+            src/OpenGLAPI.cpp
             src/CoreSystem.cpp
     )
 endif(ENGINE_CORE_SHARED)
 
 target_include_directories(Core PUBLIC external)
+target_include_directories(Core PUBLIC include)
 target_include_directories(Core PUBLIC external/SDL2/include)
 target_include_directories(Core PUBLIC external/Glew/include)
 target_include_directories(Core PUBLIC external/SDL2_image/include)

@@ -6,8 +6,8 @@
 #include <glm/gtc/quaternion.hpp>
 #include <vector>
 #include <string>
-#include <SDL2/SDL.h>
-#include <GL/glew.h>
+#include <SDLAPI.h>
+#include <OpenGLAPI.h>
 
 class Material;
 class ShaderManager;
@@ -30,22 +30,22 @@ public:
     std::vector<glm::vec3> bitangent;
     std::vector<glm::vec4> joints;
     std::vector<glm::vec4> weights;
-    std::vector<GLuint> index;
+    std::vector<UnsignedInteger32> index;
 
-    Uint16 vao = SDL_MAX_UINT16;
-    Uint16 vertexVBO = SDL_MAX_UINT16;
-    Uint16 normalVBO = SDL_MAX_UINT16;
-    Uint16 tangentVBO = SDL_MAX_UINT16;
-    Uint16 bitangentVBO = SDL_MAX_UINT16;
-    Uint16 textureVBO = SDL_MAX_UINT16;
-    Uint16 indexVBO = SDL_MAX_UINT16;
+    UnsignedInteger32 vao = UNSIGNED_INTEGER_MAX_32;
+    UnsignedInteger32 vertexVBO = UNSIGNED_INTEGER_MAX_32;
+    UnsignedInteger32 normalVBO = UNSIGNED_INTEGER_MAX_32;
+    UnsignedInteger32 tangentVBO = UNSIGNED_INTEGER_MAX_32;
+    UnsignedInteger32 bitangentVBO = UNSIGNED_INTEGER_MAX_32;
+    UnsignedInteger32 textureVBO = UNSIGNED_INTEGER_MAX_32;
+    UnsignedInteger32 indexVBO = UNSIGNED_INTEGER_MAX_32;
 
     Renderable() = default;
     ~Renderable() = default;
 
     void prepareMaterial(ShaderManager*);
-    void setPosition(GLfloat x, GLfloat y, GLfloat z);
-    void setRotation(GLfloat roll, GLfloat pitch, GLfloat yaw);
+    void setPosition(Float x, Float y, Float z);
+    void setRotation(Float roll, Float pitch, Float yaw);
     void updateModelMatrix();
 
 };

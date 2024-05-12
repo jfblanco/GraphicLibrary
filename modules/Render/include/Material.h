@@ -2,7 +2,7 @@
 #define ENGINETEST_MATERIAL_H
 
 #include <string>
-#include <SDL2/SDL.h>
+#include <SDLAPI.h>
 #include "Shader.h"
 
 class Shader;
@@ -18,12 +18,12 @@ public:
     Texture *height = nullptr;
     Texture *ambientOcclusion = nullptr;
 
-    Uint16 albedoUBO = SDL_MAX_UINT16;
-    Uint16 metalicUBO = SDL_MAX_UINT16;
-    Uint16 roughnessUBO = SDL_MAX_UINT16;
-    Uint16 normalUBO = SDL_MAX_UINT16;
-    Uint16 heightUBO = SDL_MAX_UINT16;
-    Uint16 ambientOcclusionUBO = SDL_MAX_UINT16;
+    UnsignedInteger16 albedoUBO = UNSIGNED_INTEGER_MAX_16;
+    UnsignedInteger16 metalicUBO = UNSIGNED_INTEGER_MAX_16;
+    UnsignedInteger16 roughnessUBO = UNSIGNED_INTEGER_MAX_16;
+    UnsignedInteger16 normalUBO = UNSIGNED_INTEGER_MAX_16;
+    UnsignedInteger16 heightUBO = UNSIGNED_INTEGER_MAX_16;
+    UnsignedInteger16 ambientOcclusionUBO = UNSIGNED_INTEGER_MAX_16;
 
     void virtual prepareMaterial(Renderable*);
     void virtual setTextures();

@@ -1,51 +1,18 @@
 #include "RenderableFactoryOpenGL.h"
-#include <GL/glew.h>
+#include <OpenGLAPI.h>
+
+RenderableFactoryOpenGL::RenderableFactoryOpenGL(OpenGLAPI* _openGlApi) {
+    this->openGlApi = _openGlApi;
+}
 
 void RenderableFactoryOpenGL::createRenderableBuffers(Renderable* _renderable) {
-    glGenVertexArrays(1, (GLuint*)&(_renderable->vao));
-    glBindVertexArray(_renderable->vao);
+    this->openGlApi->createVAO(&(_renderable->vao));
+    this->openGlApi->useVAO(_renderable->vao);
 
-    GLuint vertexSize = _renderable->vertices.size();
-    glGenBuffers(1, (GLuint*)&(_renderable->vertexVBO));
-    glBindBuffer(GL_ARRAY_BUFFER, _renderable->vertexVBO);
-    glBufferData(GL_ARRAY_BUFFER,
-                 sizeof(GLfloat) * 3 * vertexSize,
-                 _renderable->vertices.data(),
-                 GL_STATIC_DRAW);
-
-    glGenBuffers(1, (GLuint*)&(_renderable->normalVBO));
-    glBindBuffer(GL_ARRAY_BUFFER, _renderable->normalVBO);
-    glBufferData(GL_ARRAY_BUFFER,
-                 sizeof(GLfloat) * 3 * _renderable->normals.size(),
-                 _renderable->normals.data(),
-                 GL_STATIC_DRAW);
-
-    glGenBuffers(1, (GLuint*)&(_renderable->tangentVBO));
-    glBindBuffer(GL_ARRAY_BUFFER, _renderable->tangentVBO);
-    glBufferData(GL_ARRAY_BUFFER,
-                 sizeof(GLfloat) * 3 * _renderable->tangent.size(),
-                 _renderable->tangent.data(),
-                 GL_STATIC_DRAW);
-
-    glGenBuffers(1, (GLuint*)&(_renderable->bitangentVBO));
-    glBindBuffer(GL_ARRAY_BUFFER, _renderable->bitangentVBO);
-    glBufferData(GL_ARRAY_BUFFER,
-                 sizeof(GLfloat) * 3 * _renderable->bitangent.size(),
-                 _renderable->bitangent.data(),
-                 GL_STATIC_DRAW);
-
-    glGenBuffers(1, (GLuint*)&(_renderable->textureVBO));
-    glBindBuffer(GL_ARRAY_BUFFER, _renderable->textureVBO);
-    glBufferData(GL_ARRAY_BUFFER,
-                 sizeof(GLfloat) * 2 * _renderable->texture.size(),
-                 _renderable->texture.data(),
-                 GL_STATIC_DRAW);
-
-    GLuint indexSize = _renderable->index.size();
-    glGenBuffers(1, (GLuint*)&(_renderable->indexVBO));
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _renderable->indexVBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                 sizeof(GLuint) * indexSize,
-                 _renderable->index.data(),
-                 GL_STATIC_DRAW);
+    this->openGlApi->createAndMoveVertexVBO(&(_renderable->vertexVBO), &(_renderable->vertices));
+    this->openGlApi->createAndMoveNormalVBO(&(_renderable->normalVBO), &(_renderable->normals));
+    this->openGlApi->createAndMoveTextureVBO(&(_renderable->textureVBO), &(_renderable->texture));
+    this->openGlApi->createAndMoveTangentVBO(&(_renderable->tangentVBO), &(_renderable->tangent));
+    this->openGlApi->createAndMoveBiTangentVBO(&(_renderable->bitangentVBO), &(_renderable->bitangent));
+    this->openGlApi->createAndMoveIndexVBO(&(_renderable->indexVBO), &(_renderable->index));
 }

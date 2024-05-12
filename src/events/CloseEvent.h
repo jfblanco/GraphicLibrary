@@ -9,25 +9,24 @@ class Camera;
 class Renderable;
 class CloseEvent : public EventListener {
 private:
-    SDL_bool exitLoop = SDL_FALSE;
+    Boolean exitLoop = FALSE;
 public:
     CloseEvent()=default;
     ~CloseEvent()=default;
 
     Camera* camera;
     ParallaxMappingShader* shader = nullptr;
-    Sint8 selected = 0;
+    Integer8 selected = 0;
     std::vector<Renderable*> cubeElements;
-    SDL_bool isLeftMouseClicked = SDL_FALSE;
+    Boolean isLeftMouseClicked = FALSE;
 
-    SDL_bool getExitLoop() { return this->exitLoop; };
-    void quitTimeEvent(SDL_Event) override;
-    void keyDownTimeEvent(SDL_Event) override;
-    void mouseButtonPressed(SDL_Event) override;
-    void mouseButtonReleased(SDL_Event) override;
-    void mouseScroll(SDL_Event) override {};
-    void mouseMove(SDL_Event) override;
+    Boolean getExitLoop() { return this->exitLoop; };
+    void quitTimeEvent(EngineEvent) override;
+    void keyDownTimeEvent(EngineEvent) override;
+    void mouseButtonPressed(EngineEvent) override;
+    void mouseButtonReleased(EngineEvent) override;
+    void mouseScroll(EngineEvent) override {};
+    void mouseMove(EngineEvent) override;
 };
-
 
 #endif //ENGINETEST_CLOSEEVENT_H

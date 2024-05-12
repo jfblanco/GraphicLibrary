@@ -36,6 +36,7 @@ else(ENGINE_INPUT_SHARED)
 endif(ENGINE_INPUT_SHARED)
 
 target_include_directories(EventLibrary PUBLIC include)
+target_include_directories(EventLibrary PUBLIC ${INPUT_ENGINE_CORE_FOLDER}/include)
 target_include_directories(EventLibrary PUBLIC ${INPUT_ENGINE_CORE_FOLDER}/interfaces)
 target_include_directories(EventLibrary PUBLIC ${INPUT_ENGINE_CORE_FOLDER}/external/SDL2/include)
 target_include_directories(EventLibrary PUBLIC ${INPUT_ENGINE_CORE_FOLDER}/external/SDL2_image/include)

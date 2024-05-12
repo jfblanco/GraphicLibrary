@@ -1,7 +1,6 @@
 #ifndef CONFIGURATION_MANAGERSYSTEM_H
 #define CONFIGURATION_MANAGERSYSTEM_H
 
-#include <SDL2/SDL.h>
 #include <string>
 
 class Configuration;

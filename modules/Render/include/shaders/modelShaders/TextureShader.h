@@ -8,7 +8,7 @@ public:
     TextureShader() = default;
     ~TextureShader() = default;
 
-    void useUniformVariables(RenderingSystem*, Renderable*);
+    void useUniformVariables(RenderingSystem*, OpenGLAPI*, Renderable*) override;
 };
 
 

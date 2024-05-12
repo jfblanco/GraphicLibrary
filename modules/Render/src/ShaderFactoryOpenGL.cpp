@@ -1,10 +1,7 @@
-#include <SDL2/SDL.h>
-#include <GL/glew.h>
+#include <SDLAPI.h>
+#include <OpenGLAPI.h>
 #include <Configuration.h>
 #include <string>
-#include <filesystem>
-#include <fstream>
-#include <sstream>
 #include <ShaderManager.h>
 #include "../include/ShaderFactoryOpenGL.h"
 #include <ColorShader.h>
@@ -14,106 +11,45 @@
 #include <NormalMappingShader.h>
 #include <ParallaxMappingShader.h>
 
-void checkCompilingStatusLog(GLuint shaderId, GLenum flag) {
-    GLint compileStatus = GL_TRUE;
-    glGetShaderiv(shaderId, flag,&compileStatus);
-
-    if(compileStatus == GL_FALSE) {
-        GLint TotalLenght = 0;
-        glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &TotalLenght);
-        std::string logs;
-        logs.resize(TotalLenght);
-        glGetShaderInfoLog(shaderId, TotalLenght, nullptr, &logs[0]);
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, logs.c_str());
-    }
+ShaderFactoryOpenGL::ShaderFactoryOpenGL(SDLAPI* _sdlApi, OpenGLAPI* _oglApi) {
+    this->sdlApi = _sdlApi;
+    this->oglApi = _oglApi;
 }
 
-void checkLinkingStatusLog(GLuint shaderId, GLenum flag) {
-    GLint compileStatus = GL_TRUE;
-    glGetProgramiv(shaderId, flag, &compileStatus);
-    if(compileStatus == GL_FALSE) {
-        GLint TotalLenght = 0;
-        glGetProgramiv(shaderId, GL_INFO_LOG_LENGTH, &TotalLenght);
-        std::string logs;
-        logs.resize(TotalLenght);
-        glGetProgramInfoLog(shaderId, TotalLenght, nullptr, &logs[0]);
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, logs.c_str());
-    }
-}
-
-unsigned long getFileLength(std::ifstream& file)
-{
-    if(!file.good())
-        return 0;
-    GLulong pos = file.tellg();
-    file.seekg(0,std::ios::end);
-    GLulong len = file.tellg();
-    file.seekg(std::ios::beg);
-    return len;
-}
-
-char* readFile(const GLchar* _file, GLint* lenght){
-    std::ifstream file;
-    file.open(_file, std::ios::in);
-    *lenght = getFileLength(file);
-
-    if(*lenght == 0)
-        return new GLchar[1]{' '};
-    else{
-        char* ShaderSource = new GLchar[*lenght];
-        GLuint i=0;
-        while (file.good())
-        {
-            ShaderSource[i] = file.get();
-            i++;
-        }
-        ShaderSource[i-1] = '\0';
-        return ShaderSource;
-    }
-}
-
-void createShader(Shader* shader, const GLchar *name, const GLchar *vertexPath, const GLchar *fragmentPath) {
+void ShaderFactoryOpenGL::createShader(Shader* shader, const char *name, const char *vertexPath, const char *fragmentPath) {
     shader->name = name;
 
-    shader->vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    shader->fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    shader->shaderProgram = glCreateProgram();
+    this->oglApi->generateShaderIds(&(shader->vertexShader), &(shader->fragmentShader), &(shader->shaderProgram));
+    this->oglApi->compileShaders(&(shader->vertexShader), vertexPath, &(shader->fragmentShader), fragmentPath);
 
-    GLint fileSizeVertex;
-    GLint fileSizeFragment;
-
-    GLchar* codeVertex = readFile(vertexPath, &fileSizeVertex);
-    GLchar* codeFragment = readFile(fragmentPath, &fileSizeFragment);
-
-    glShaderSource(shader->vertexShader, 1, &codeVertex, nullptr);
-    glShaderSource(shader->fragmentShader, 1, &codeFragment, nullptr);
-
-    glCompileShader(shader->vertexShader);
-    glCompileShader(shader->fragmentShader);
-
-    checkCompilingStatusLog(shader->vertexShader, GL_COMPILE_STATUS);
-    checkCompilingStatusLog(shader->fragmentShader, GL_COMPILE_STATUS);
-
-    glAttachShader(shader->shaderProgram, shader->vertexShader);
-    glAttachShader(shader->shaderProgram, shader->fragmentShader);
-
-    glLinkProgram(shader->shaderProgram);
-    checkLinkingStatusLog(shader->shaderProgram, GL_LINK_STATUS);
-
-    glUseProgram(shader->shaderProgram);
-    shader->findUniformVariables();
-    shader->findVertexAttributeVariables();
-    if(glIsProgram(shader->shaderProgram) == GL_FALSE) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "[ShaderFactoryOpenGL] [    Error");
+    std::string vertexLogs = this->oglApi->checkCompilingStatusLog(shader->vertexShader);
+    if(!vertexLogs.empty()) {
+        this->sdlApi->errorLog(vertexLogs.c_str());
     }
+    std::string fragmentLogs = this->oglApi->checkCompilingStatusLog(shader->fragmentShader);
+    if(!fragmentLogs.empty()) {
+        this->sdlApi->errorLog(fragmentLogs.c_str());
+    }
+
+    if(this->oglApi->attachAndLinkShaderProgram(&(shader->vertexShader), &(shader->fragmentShader), &(shader->shaderProgram))) {
+        this->sdlApi->errorLog("[ShaderFactoryOpenGL]: Error compiling %s ", shader->name.c_str());
+    }
+
+    std::string programLogs = this->oglApi->checkLinkingStatusLog(shader->shaderProgram);
+    if(!programLogs.empty()) {
+        this->sdlApi->errorLog(programLogs.c_str());
+    }
+
+    this->oglApi->useProgram(&(shader->shaderProgram));
+    shader->findUniformVariables(this->oglApi);
+    shader->findVertexAttributeVariables(this->oglApi);
 }
 
 void ShaderFactoryOpenGL::init(Configuration *configuration, ShaderManager *shaderManager) {
     std::string path = configuration->getPropertyAsString("shadersFolder");
     std::string message("[ShaderFactoryOpenGL] Loading: ");
-    SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, message.append(path).c_str());
-
-    SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "[ShaderFactoryOpenGL] [    Loading Simple Shader]");
+    this->sdlApi->infoLog(message.append(path).c_str());
+    this->sdlApi->infoLog("[ShaderFactoryOpenGL] [    Loading Simple Shader]");
 
     auto* colorShader = new ColorShader();
     auto* normalShader = new NormalShader();
@@ -136,10 +72,9 @@ void ShaderFactoryOpenGL::init(Configuration *configuration, ShaderManager *shad
     shaderManager->addShader(normalMappingShader);
     shaderManager->addShader(parallaxMapping);
 
-    glUseProgram(0);
-    SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "[ShaderFactoryOpenGL] [    Simple Shader Loaded]");
-
-    SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "[ShaderFactoryOpenGL] Shaders loading complete");
+    this->oglApi->cleanProgram();
+    this->sdlApi->infoLog("[ShaderFactoryOpenGL] [    Simple Shader Loaded]");
+    this->sdlApi->infoLog("[ShaderFactoryOpenGL] Shaders loading complete");
 }
 
 void ShaderFactoryOpenGL::destroy() {
