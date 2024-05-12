@@ -14,7 +14,7 @@
   "resourceManager": {
     "modelPathFolder": "res/models/",
     "imagePathFolder": "res/images/",
-    "shaderPathFolder": "res/shaders/"
+    "shaderPathFolder": "res/glsl/"
   },
   "logManagger": {
     "enableConfigManagerLogger": true,
@@ -24,7 +24,7 @@
   },
   "shaderManager": {
     "shaderConfigurationFile": "res/shadersConfig.json",
-    "shadersFolder": "res/shaders"
+    "shadersFolder": "res/glsl"
   },
   "algo": 65527
 }

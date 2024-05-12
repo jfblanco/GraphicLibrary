@@ -11,7 +11,7 @@ public:
     void init() override;
     void destroy() override;
 
-    SDL_bool getExitLoop() override;
+    Boolean getExitLoop() override;
     void checkEventQueue() override;
 
     InputSystemMock() = default;

@@ -26,16 +26,16 @@ if(ENGINE_RENDERER_SHARED)
     add_library(RenderLibrary SHARED
             src/ShaderFactoryOpenGL.cpp
             src/RenderableFactoryOpenGL.cpp
-            src/MaterialOpenGL.cpp
-            src/ShaderOpenGL.cpp
-            src/RenderableOpenGL.cpp
+            src/Material.cpp
+            src/Shader.cpp
+            src/Renderable.cpp
             src/ShaderManagerOpenGL.cpp
-            shaders/src/ColorShader.cpp
-            shaders/src/NormalShader.cpp
-            shaders/src/TextureShader.cpp
-            shaders/src/LightningShader.cpp
-            shaders/src/NormalMappingShader.cpp
-            shaders/src/ParallaxMappingShader.cpp
+            src/shaders/modelShaders/ColorShader.cpp
+            src/shaders/modelShaders/NormalShader.cpp
+            src/shaders/modelShaders/TextureShader.cpp
+            src/shaders/modelShaders/LightningShader.cpp
+            src/shaders/modelShaders/NormalMappingShader.cpp
+            src/shaders/modelShaders/ParallaxMappingShader.cpp
             src/RendererOpenGL.cpp
     )
 else(ENGINE_RENDERER_SHARED)
@@ -44,21 +44,23 @@ else(ENGINE_RENDERER_SHARED)
                 src/ShaderFactoryOpenGL.cpp
                 src/RenderableFactoryOpenGL.cpp
                 src/ShaderManagerOpenGL.cpp
-                src/MaterialOpenGL.cpp
-                src/ShaderOpenGL.cpp
-                src/RenderableOpenGL.cpp
-                shaders/src/ColorShader.cpp
-                shaders/src/NormalShader.cpp
-                shaders/src/TextureShader.cpp
-                shaders/src/LightningShader.cpp
-                shaders/src/NormalMappingShader.cpp
-                shaders/src/ParallaxMappingShader.cpp
+            src/Material.cpp
+            src/Shader.cpp
+            src/Renderable.cpp
+            src/shaders/modelShaders/ColorShader.cpp
+            src/shaders/modelShaders/NormalShader.cpp
+            src/shaders/modelShaders/TextureShader.cpp
+            src/shaders/modelShaders/LightningShader.cpp
+            src/shaders/modelShaders/NormalMappingShader.cpp
+            src/shaders/modelShaders/ParallaxMappingShader.cpp
             src/RendererOpenGL.cpp
     )
 endif(ENGINE_RENDERER_SHARED)
 
 target_include_directories(RenderLibrary PUBLIC include)
-target_include_directories(RenderLibrary PUBLIC shaders/include)
+target_include_directories(RenderLibrary PUBLIC include/shaders/guiShaders)
+target_include_directories(RenderLibrary PUBLIC include/shaders/modelShaders)
+target_include_directories(RenderLibrary PUBLIC ${RENDER_ENGINE_CORE_FOLDER}/include)
 target_include_directories(RenderLibrary PUBLIC ${RENDER_ENGINE_CORE_FOLDER}/interfaces)
 target_include_directories(RenderLibrary PUBLIC ${RENDER_ENGINE_CORE_FOLDER}/interfaces/includes)
 target_include_directories(RenderLibrary PUBLIC ${RENDER_ENGINE_CORE_FOLDER}/entities/include)
@@ -84,4 +86,4 @@ target_link_libraries(RenderLibrary SDL3_mixer)
 target_link_libraries(RenderLibrary glew32)
 target_link_libraries(RenderLibrary opengl32)
 
-file(COPY res/shaders DESTINATION "${CMAKE_BINARY_DIR}/src/res")
+file(COPY glsl DESTINATION "${CMAKE_BINARY_DIR}/src/res")

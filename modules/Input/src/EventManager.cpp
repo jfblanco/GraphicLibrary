@@ -1,5 +1,5 @@
-#include "../include/EventManager.h"
-#include "../include/EventListener.h"
+#include <EventManager.h>
+#include <EventListener.h>
 
 void EventManager::addQuitEventListener(EventListener* quitEventListener) {
     this->quitEventListeners.push_back(quitEventListener);
@@ -22,47 +22,41 @@ void EventManager::sendQuitEventToAllListeners() {
 }
 
 void EventManager::init() {
-    SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Initializing [EventManager]");
-    if(!SDL_WasInit(SDL_INIT_EVENTS)){
-        if(SDL_InitSubSystem(SDL_INIT_EVENTS)) {
-            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error initializing SDL EVENTS: %s", SDL_GetError());
-        }
-    } else {
-        SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "SDL_INIT_EVENTS was already initialized...");
-    }
+    this->sdlApi->infoLog("Initializing [EventManager]");
+    this->sdlApi->initInputSDL();
     this->quitEventListeners.resize(this->quitEventBufferSize);
     this->keyBoardEventListeners.resize(this->keyBoardEventBufferSize);
-    SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "[EventManager] Init Completed");
+    this->sdlApi->infoLog("[EventManager] Init Completed");
 }
 
 void EventManager::destroy() {
 
 }
 
-SDL_bool EventManager::getExitLoop() {
+Boolean EventManager::getExitLoop() {
     return this->exitLoop;
 }
 
 void EventManager::checkEventQueue() {
-    while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-            case SDL_QUIT:
-                this->exitLoop = SDL_TRUE;
+    while (this->sdlApi->checkEvent(&event)) {
+        switch (this->sdlApi->getEventType(&event)) {
+            case QUIT_EVENT:
+                this->exitLoop = TRUE;
                 this->sendQuitEventToAllListeners();
                 break;
-            case SDL_KEYDOWN:
+            case KEY_PRESSED:
                 this->sendKeyboardEventToAllListeners();
                 break;
-            case SDL_MOUSEMOTION:
+            case MOUSE_MOTION:
                 this->sendMouseEventToAllListeners();
                 break;
-            case SDL_MOUSEBUTTONDOWN:
+            case MOUSE_BUTTON_DOWN:
                 this->sendMouseEventToAllListeners();
                 break;
-            case SDL_MOUSEBUTTONUP:
+            case MOUSE_BUTTON_UP:
                 this->sendMouseEventToAllListeners();
                 break;
-            case SDL_MOUSEWHEEL:
+            case MOUSE_WHEEL:
                 this->sendMouseEventToAllListeners();
                 break;
         }
@@ -80,16 +74,16 @@ void EventManager::sendKeyboardEventToAllListeners() {
 void EventManager::sendMouseEventToAllListeners() {
     for (EventListener* item : this->mouseEventListeners) {
         if(item != nullptr) {
-            if(this->event.type == SDL_MOUSEWHEEL){
+            if(this->event.type == MOUSE_WHEEL){
                 item->mouseScroll(this->event);
             }
-            if(this->event.type == SDL_MOUSEMOTION){
+            if(this->event.type == MOUSE_MOTION){
                 item->mouseMove(this->event);
             }
-            if(this->event.type == SDL_MOUSEBUTTONDOWN){
+            if(this->event.type == MOUSE_BUTTON_DOWN){
                 item->mouseButtonPressed(this->event);
             }
-            if(this->event.type == SDL_MOUSEBUTTONUP){
+            if(this->event.type == MOUSE_BUTTON_UP){
                 item->mouseButtonReleased(this->event);
             }
         }

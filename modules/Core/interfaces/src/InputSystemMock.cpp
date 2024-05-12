@@ -8,12 +8,12 @@ void InputSystemMock::destroy() {
 
 }
 
-SDL_bool InputSystemMock::getExitLoop() {
+Boolean InputSystemMock::getExitLoop() {
     this->currentTime = SDL_GetTicks();
     if(currentTime > startTime + 10000) {
-        return SDL_TRUE;
+        return TRUE;
     } else {
-        return SDL_FALSE;
+        return FALSE;
     }
 }
 

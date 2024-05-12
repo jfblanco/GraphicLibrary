@@ -2,23 +2,23 @@
 #define ENGINETEST_CONFIGURATIONS_H
 
 #include <string>
-#include <SDL2/SDL.h>
 #include <map>
 #include <utility>
+#include <SDLAPI.h>
 
 class Configuration {
 public:
     std::string pathToModelResources = "./res/properties.json";
     std::map<std::string, std::string> stringProperties;
-    std::map<std::string, Uint64> uintProperties;
-    std::map<std::string, SDL_bool> boolProperties;
+    std::map<std::string, UnsignedInteger64> uintProperties;
+    std::map<std::string, Boolean> boolProperties;
 
     Configuration() = default;
     ~Configuration() = default;
 
-    uint16_t getPropertyAsUInt16(const std::string& key) {
+    UnsignedInteger64 getPropertyAsUInt16(const std::string& key) {
         auto result = this->uintProperties.find(key);
-        uint16_t returnedValue = -1;
+        UnsignedInteger64 returnedValue = -1;
         if(result != this->uintProperties.end()){
             returnedValue = result->second;
         }
@@ -39,6 +39,5 @@ public:
     }
 
 };
-
 
 #endif //ENGINETEST_CONFIGURATIONS_H

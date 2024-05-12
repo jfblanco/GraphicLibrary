@@ -75,24 +75,24 @@
 	],
 	"images":[
 		{
-			"mimeType":"image/jpeg",
-			"name":"Leather011_4K-JPG_NormalGL",
-			"uri":"Leather011_4K-JPG_NormalGL.jpg"
-		},
-		{
-			"mimeType":"image/jpeg",
-			"name":"Leather011_4K-JPG_Color",
-			"uri":"Leather011_4K-JPG_Color.jpg"
-		},
-		{
-			"mimeType":"image/png",
-			"name":"Leather011_4K-JPG_Roughness",
-			"uri":"Leather011_4K-JPG_Roughness.png"
-		},
+            "mimeType":"image/png",
+            "name":"brick-wall_normal-ogl",
+            "uri":"brick-wall_normal-ogl.png"
+        },
         {
             "mimeType":"image/png",
-			"name":"Leather011_4K-JPG_Displacement",
-			"uri":"Leather011_4K-JPG_Displacement.jpg"
+            "name":"brick-wall_albedo",
+            "uri":"brick-wall_albedo.png"
+        },
+        {
+            "mimeType":"image/png",
+            "name":"brick-wall_metallic-brick-wall_roughness",
+            "uri":"brick-wall_metallic-brick-wall_roughness.png"
+        },
+        {
+            "mimeType":"image/png",
+            "name":"brick-wall_height",
+            "uri":"brick-wall_height.png"
         }
 	],
 	"accessors":[

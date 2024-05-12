@@ -1,18 +1,19 @@
 #ifndef GAMEENGINE_EVENTMANAGER_H
 #define GAMEENGINE_EVENTMANAGER_H
 
-#include <SDL2/SDL.h>
+#include <SDLAPI.h>
 #include <InputSystem.h>
 #include <vector>
 
 class EventListener;
 class EventManager : public InputSystem {
     private:
-        SDL_Event event{};
-        Uint8 quitEventBufferSize = 0;
-        Uint8 keyBoardEventBufferSize = 0;
-        Uint8 mouseEventBufferSize = 0;
-        SDL_bool exitLoop = SDL_FALSE;
+        SDLAPI *sdlApi = nullptr;
+        EngineEvent event{};
+        UnsignedInteger8 quitEventBufferSize = 0;
+        UnsignedInteger8 keyBoardEventBufferSize = 0;
+        UnsignedInteger8 mouseEventBufferSize = 0;
+        Boolean exitLoop = FALSE;
 
         std::vector<EventListener*> quitEventListeners;
         std::vector<EventListener*> keyBoardEventListeners;
@@ -23,13 +24,13 @@ class EventManager : public InputSystem {
         void sendMouseEventToAllListeners();
 
     public:
-        EventManager() = default;
+        explicit EventManager(SDLAPI *_sdlApi) { sdlApi = _sdlApi; };
         ~EventManager() = default;
 
         void init() override;
         void destroy() override;
         void checkEventQueue() override;
-        SDL_bool getExitLoop() override;
+        Boolean getExitLoop() override;
         void addQuitEventListener(EventListener*);
         void addKeyBoardEventListener(EventListener*);
         void addMouseEventListener(EventListener*);
